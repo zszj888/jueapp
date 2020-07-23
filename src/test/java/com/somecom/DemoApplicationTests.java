@@ -1,4 +1,4 @@
-package com.somecom.demo;
+package com.somecom;
 
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;

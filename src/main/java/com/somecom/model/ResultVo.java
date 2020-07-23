@@ -1,4 +1,4 @@
-package com.somecom.demo.model;
+package com.somecom.model;
 
 public class ResultVo {
     Integer ret;
@@ -21,6 +21,14 @@ public class ResultVo {
         v.setMsg("success");
         return v;
     }
+
+    public static ResultVo ok() {
+        ResultVo v = new ResultVo();
+        v.setRet(200);
+        v.setMsg("success");
+        return v;
+    }
+
 
     public Integer getRet() {
         return ret;
