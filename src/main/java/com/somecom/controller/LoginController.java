@@ -18,7 +18,7 @@ public class LoginController {
     private WebClient.Builder builder;
 
     private final static String WX_URL = "https://api.weixin.qq.com/sns/jscode2session?" +
-            "appid=APPID&secret=SECRET&grant_type=authorization_code&js_code=";
+            "appid=wx61089dda2b3d8b09&secret=1e8f235c05a63838358076eb10c96624&grant_type=authorization_code&js_code=";
 
     @ApiOperation(value = "验证接口，传入code即可",notes = "详情参考微信API")
     @GetMapping(path = "/finishLogin")

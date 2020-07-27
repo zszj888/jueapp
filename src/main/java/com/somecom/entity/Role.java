@@ -42,6 +42,39 @@ public class Role {
     @Column(name = "create_time")
     private Date createTime;
 
+    @Column(name = "open_id")
+    private String openid;
+
+    @Column(name = "video_url")
+    private String video_url;
+
+    @Column(name = "role_type")
+    private String role_type;
+
+    public String getOpenid() {
+        return openid;
+    }
+
+    public void setOpenid(String openid) {
+        this.openid = openid;
+    }
+
+    public String getVideo_url() {
+        return video_url;
+    }
+
+    public void setVideo_url(String video_url) {
+        this.video_url = video_url;
+    }
+
+    public String getRole_type() {
+        return role_type;
+    }
+
+    public void setRole_type(String role_type) {
+        this.role_type = role_type;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -135,6 +168,9 @@ public class Role {
                 ", skill='" + skill + '\'' +
                 ", isCollection='" + isCollection + '\'' +
                 ", createTime=" + createTime +
+                ", openid='" + openid + '\'' +
+                ", video_url='" + video_url + '\'' +
+                ", role_type='" + role_type + '\'' +
                 '}';
     }
 }

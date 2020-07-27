@@ -20,6 +20,8 @@ public class User {
     private Date birthda_day;
     @Column(name = "create_time")
     private Date createTime;
+    @Column(name = "open_id")
+    private String openid;
 
     @Override
     public String toString() {
@@ -31,7 +33,16 @@ public class User {
                 ", sex='" + sex + '\'' +
                 ", birthda_day=" + birthda_day +
                 ", createTime=" + createTime +
+                ", openid='" + openid + '\'' +
                 '}';
+    }
+
+    public String getOpenid() {
+        return openid;
+    }
+
+    public void setOpenid(String openid) {
+        this.openid = openid;
     }
 
     public Integer getId() {
