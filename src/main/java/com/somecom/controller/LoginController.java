@@ -18,8 +18,10 @@ import reactor.core.publisher.Mono;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.UUID;
 
 @Api(tags = "微信登录验证")
 @RestController
@@ -44,13 +46,22 @@ public class LoginController {
 
     @ApiOperation(value = "上传文件接口", notes = "上传头像或者短视频")
     @PostMapping(path = "/upload")
-    public ResultVo upload(MultipartFile file) throws IOException {
+    public ResultVo upload(MultipartFile file, String openid) throws IOException {
         if (!Files.exists(Paths.get(filePath))) {
             Files.createDirectories(Paths.get(filePath));
         }
-        if (Objects.nonNull(file) && StringUtils.hasText(file.getName())) {
-            IOUtils.copy(file.getInputStream(), new FileOutputStream(Paths.get(filePath, file.getOriginalFilename()).toFile()));
-            return ResultVo.ok();
+        if (!StringUtils.hasText(openid)) {
+            return ResultVo.err("openid为空");
+        }
+        if (!Files.exists(Paths.get(filePath, openid))) {
+            Files.createDirectories(Paths.get(filePath, openid));
+        }
+        String fileName = UUID.randomUUID().toString();
+        if (Objects.nonNull(file)) {
+            Path finalFileName = Paths.get(filePath, openid,
+                    fileName + "." + StringUtils.getFilenameExtension(file.getOriginalFilename()));
+            IOUtils.copy(file.getInputStream(), new FileOutputStream(finalFileName.toFile()));
+            return ResultVo.ok(finalFileName);
         }
         return ResultVo.err("upload failed");
     }
