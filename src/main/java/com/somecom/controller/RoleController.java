@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
+
 @RestController
 @Api(tags = "角色管理")
 @RequestMapping(path = "/api/v1")
@@ -27,6 +29,7 @@ public class RoleController {
     @ApiOperation(value = "新增角色", notes = "前端做字段完整校验")
     @PostMapping("/addRoleInfo")
     public ResultVo addRole(Role role) {
+        role.setCreateTime(new Date());
         return ResultVo.ok(roleRepository.save(role));
     }
 

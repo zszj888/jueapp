@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,7 +45,7 @@ public class LoginController {
     @ApiOperation(value = "上传文件接口", notes = "上传头像或者短视频")
     @PostMapping(path = "/upload")
     public ResultVo upload(MultipartFile file) throws IOException {
-        if (!Files.exists(Paths.get(filePath))){
+        if (!Files.exists(Paths.get(filePath))) {
             Files.createDirectories(Paths.get(filePath));
         }
         if (Objects.nonNull(file) && StringUtils.hasText(file.getName())) {

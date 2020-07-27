@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
+
 @RestController
 @Api(tags = "任务管理")
 @RequestMapping(path = "/api/v1")
@@ -26,7 +28,8 @@ public class TaskController {
 
     @ApiOperation(value = "新增任务", notes = "确保字段合法")
     @PostMapping("/addTask")
-    public ResultVo addTask(Task role) {
+    public ResultVo addTask(Task role)
+    {role.setCreateTime(new Date());
         return ResultVo.ok(taskRepository.save(role));
     }
 

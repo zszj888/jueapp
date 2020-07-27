@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
+
 @RestController
 @Api(tags = "用户管理")
 @RequestMapping(path = "/api/v1")
@@ -28,6 +30,7 @@ public class UserController {
     @ApiOperation(value = "新增用户", notes = "注意确保字段的合法性")
     @PostMapping("/addUserInfo")
     public ResultVo addUser(User user) {
+        user.setCreateTime(new Date());
         return ResultVo.ok(userRepository.save(user));
     }
 
