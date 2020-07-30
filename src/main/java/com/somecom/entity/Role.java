@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 @Entity
@@ -19,6 +20,7 @@ public class Role {
     @Column(name = "role_name")
     private String name;
 
+    @NotBlank(message = "图片文件名必传，例:c6e92c16-ae3c-49d1-9bfb-90aaf2ad4f5c.jpg")
     @Column(name = "img")
     private String img;
 
@@ -30,6 +32,7 @@ public class Role {
 
     @Column(name = "age")
     private Integer age;
+
     @Column(name = "sex")
     private Integer sex;
 

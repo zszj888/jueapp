@@ -1,8 +1,11 @@
 package com.somecom.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
 @Entity // This tells Hibernate to make a table out of this class
@@ -100,4 +103,5 @@ public class User {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+
 }

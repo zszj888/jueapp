@@ -29,6 +29,14 @@ public class ResultVo {
         return v;
     }
 
+    @Override
+    public String toString() {
+        return "ResultVo{" +
+                "ret=" + ret +
+                ", msg='" + msg + '\'' +
+                ", data=" + data +
+                '}';
+    }
 
     public Integer getRet() {
         return ret;

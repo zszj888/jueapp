@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,7 +29,7 @@ public class TaskController {
 
     @ApiOperation(value = "新增任务", notes = "确保字段合法")
     @PostMapping("/addTask")
-    public ResultVo addTask(Task role)
+    public ResultVo addTask(@RequestBody Task role)
     {role.setCreateTime(new Date());
         return ResultVo.ok(taskRepository.save(role));
     }
@@ -42,7 +43,7 @@ public class TaskController {
 
     @ApiOperation(value = "更新任务", notes = "传入合法字段即可")
     @PostMapping("updateTask")
-    public ResultVo updateTask(Task role) {
+    public ResultVo updateTask(@RequestBody Task role) {
         return ResultVo.ok(taskRepository.saveAndFlush(role));
     }
 }
