@@ -20,6 +20,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -54,7 +59,13 @@ public class RoleController {
     @PostMapping("/addRoleInfo")
     @Transactional
     public ResultVo addRole(@RequestBody Role role) throws IOException {
-        role.setCreateTime(new Date());
+        Date now = new Date();
+        role.setCreateTime(now);
+        Instant instant = role.getBirthda_day().toInstant();
+        ZoneId zone = ZoneId.systemDefault();
+        LocalDate localDate = LocalDateTime.ofInstant(instant, zone).toLocalDate();
+        role.setAge(Period.between(localDate, LocalDate.now()).getYears());
+
         Role save = roleRepository.save(role);
         Path newPath = Paths.get(filePath, save.getOpenid(), String.valueOf(save.getId()));
         if (!Files.exists(newPath)) Files.createDirectories(newPath);

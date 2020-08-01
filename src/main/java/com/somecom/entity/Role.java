@@ -54,6 +54,17 @@ public class Role {
     @Column(name = "role_type")
     private String role_type;
 
+    @Column(name = "birthda_day")
+    private Date birthda_day;
+
+    public Date getBirthda_day() {
+        return birthda_day;
+    }
+
+    public void setBirthda_day(Date birthda_day) {
+        this.birthda_day = birthda_day;
+    }
+
     public String getOpenid() {
         return openid;
     }
@@ -174,6 +185,7 @@ public class Role {
                 ", openid='" + openid + '\'' +
                 ", video_url='" + video_url + '\'' +
                 ", role_type='" + role_type + '\'' +
+                ", birthda_day=" + birthda_day +
                 '}';
     }
 }
