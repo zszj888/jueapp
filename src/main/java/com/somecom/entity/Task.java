@@ -1,12 +1,17 @@
 package com.somecom.entity;
 
+import com.google.common.base.MoreObjects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "t_task")
@@ -40,22 +45,46 @@ public class Task {
     private String isCollection;
 
     @Column(name = "create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
+
+    //已付款待确认/进行中/已完成
+    private String status;
+    @Column(name = "task_time")
+    private LocalDateTime taskTime;
+    @OneToOne
+    @JoinColumn(name = "role_id", nullable = false, updatable = false)
+    private Role role;
+
+    //有效期
+    @Column(name = "validate_time")
+    private LocalDateTime validateTime;
+
+    @ManyToOne
+    @JoinColumn(name = "produced_by_user_id", nullable = false, updatable = false)
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "accepted_by_user_id")
+    private User acceptUser;
 
     @Override
     public String toString() {
-        return "Task{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", img='" + img + '\'' +
-                ", desc='" + desc + '\'' +
-                ", remrks='" + remrks + '\'' +
-                ", ontop=" + ontop +
-                ", recommend=" + recommend +
-                ", skill='" + skill + '\'' +
-                ", isCollection='" + isCollection + '\'' +
-                ", createTime=" + createTime +
-                '}';
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("name", name)
+                .add("img", img)
+                .add("desc", desc)
+                .add("remrks", remrks)
+                .add("ontop", ontop)
+                .add("recommend", recommend)
+                .add("skill", skill)
+                .add("isCollection", isCollection)
+                .add("createTime", createTime)
+                .add("status", status)
+                .add("taskTime", taskTime)
+                .add("role", role)
+                .add("validateTime", validateTime)
+                .toString();
     }
 
     public Integer getId() {
@@ -130,11 +159,43 @@ public class Task {
         this.isCollection = isCollection;
     }
 
-    public Date getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getTaskTime() {
+        return taskTime;
+    }
+
+    public void setTaskTime(LocalDateTime taskTime) {
+        this.taskTime = taskTime;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public LocalDateTime getValidateTime() {
+        return validateTime;
+    }
+
+    public void setValidateTime(LocalDateTime validateTime) {
+        this.validateTime = validateTime;
     }
 }

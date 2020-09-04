@@ -7,7 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "t_role")
@@ -43,7 +44,7 @@ public class Role {
     private String isCollection;
 
     @Column(name = "create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
 
     @Column(name = "open_id")
     private String openid;
@@ -55,13 +56,14 @@ public class Role {
     private String role_type;
 
     @Column(name = "birthda_day")
-    private Date birthda_day;
+//    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birthda_day;
 
-    public Date getBirthda_day() {
+    public LocalDate getBirthda_day() {
         return birthda_day;
     }
 
-    public void setBirthda_day(Date birthda_day) {
+    public void setBirthda_day(LocalDate birthda_day) {
         this.birthda_day = birthda_day;
     }
 
@@ -89,11 +91,12 @@ public class Role {
         this.role_type = role_type;
     }
 
-    public Date getCreateTime() {
+
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 

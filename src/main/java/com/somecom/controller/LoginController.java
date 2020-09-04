@@ -1,11 +1,15 @@
 package com.somecom.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.somecom.entity.User;
 import com.somecom.model.ResultVo;
+import com.somecom.repo.UserRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Example;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,25 +25,30 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Api(tags = "微信登录验证")
 @RestController
 @RequestMapping(path = "/wx")
 public class LoginController {
+    private final static String WX_URL = "https://api.weixin.qq.com/sns/jscode2session?" +
+            "appid=wx61089dda2b3d8b09&secret=1e8f235c05a63838358076eb10c96624&grant_type=authorization_code&js_code=";
     @Autowired
     private WebClient.Builder builder;
+    @Autowired
+    private UserRepository userRepository;
     @Value("${wx.file.path}")
     private String filePath;
 
-    private final static String WX_URL = "https://api.weixin.qq.com/sns/jscode2session?" +
-            "appid=wx61089dda2b3d8b09&secret=1e8f235c05a63838358076eb10c96624&grant_type=authorization_code&js_code=";
-
     @ApiOperation(value = "验证接口，传入code即可", notes = "详情参考微信API")
     @GetMapping(path = "/finishLogin")
-    public Mono<String> login(String code) {
+    public Mono<String> login(String code) throws IOException {
         if (StringUtils.hasText(code)) {
-            return builder.baseUrl(WX_URL + code).build().get().retrieve().bodyToMono(String.class);
+            Mono<String> stringMono = builder.baseUrl(WX_URL + code).build().get().retrieve().bodyToMono(String.class);
+            String openid = new ObjectMapper().readTree(stringMono.toString()).asText("openid");
+            Optional<User> one = userRepository.findOne(Example.of(new User(openid)));
+            one.orElseGet(() -> userRepository.save(new User(openid)));
         }
         return Mono.empty();
     }
