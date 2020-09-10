@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -37,6 +38,11 @@ public class UserController {
     @GetMapping(path = "/getUserList")
     public ResultVo getUserList(User example) {
         return ResultVo.ok(userRepository.findAll(Example.of(example), Sort.by("createTime").descending()));
+    }
+
+    public static void main(String[] args) {
+        LocalDate today = LocalDate.now();
+        System.out.println(today.toString());
     }
 
     @ApiOperation(value = "新增保存用户信息", notes = "注意确保字段的合法性")

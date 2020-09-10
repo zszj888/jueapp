@@ -1,5 +1,11 @@
 package com.somecom.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.google.common.base.MoreObjects;
 
 import javax.persistence.Column;
@@ -12,6 +18,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -27,8 +34,12 @@ public class User {
     private String nick_name;
     private String phone;
     private String sex;
-    private LocalDateTime birthda_day;
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
+    private LocalDate birthda_day;
     @Column(name = "create_time")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime createTime;
     @Column(name = "open_id")
     private String openid;
@@ -112,7 +123,7 @@ public class User {
         this.favorRoles = favorRoles;
     }
 
-    public void setBirthda_day(LocalDateTime birthda_day) {
+    public void setBirthda_day(LocalDate birthda_day) {
         this.birthda_day = birthda_day;
     }
 
@@ -256,7 +267,7 @@ public class User {
         this.createTime = createTime;
     }
 
-    public LocalDateTime getBirthda_day() {
+    public LocalDate getBirthda_day() {
         return birthda_day;
     }
 }

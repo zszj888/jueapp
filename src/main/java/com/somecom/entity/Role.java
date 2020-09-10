@@ -1,5 +1,11 @@
 package com.somecom.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.google.common.base.MoreObjects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,6 +30,10 @@ public class Role {
     @NotBlank(message = "图片文件名必传，例:c6e92c16-ae3c-49d1-9bfb-90aaf2ad4f5c.jpg")
     @Column(name = "img")
     private String img;
+
+    @NotBlank(message = "文件uri路径，例:c6e92c16-ae3c-49d1-9bfb-90aaf2ad4f5c.jpg")
+    @Column(name = "imgUrl")
+    private String imgUrl;
 
     @Column(name = "role_desc")
     private String desc;
@@ -56,8 +66,17 @@ public class Role {
     private String role_type;
 
     @Column(name = "birthda_day")
-//    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate birthda_day;
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
 
     public LocalDate getBirthda_day() {
         return birthda_day;
@@ -174,21 +193,22 @@ public class Role {
 
     @Override
     public String toString() {
-        return "Role{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", img='" + img + '\'' +
-                ", desc='" + desc + '\'' +
-                ", remrks='" + remrks + '\'' +
-                ", age=" + age +
-                ", sex=" + sex +
-                ", skill='" + skill + '\'' +
-                ", isCollection='" + isCollection + '\'' +
-                ", createTime=" + createTime +
-                ", openid='" + openid + '\'' +
-                ", video_url='" + video_url + '\'' +
-                ", role_type='" + role_type + '\'' +
-                ", birthda_day=" + birthda_day +
-                '}';
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("name", name)
+                .add("img", img)
+                .add("imgUrl", imgUrl)
+                .add("desc", desc)
+                .add("remrks", remrks)
+                .add("age", age)
+                .add("sex", sex)
+                .add("skill", skill)
+                .add("isCollection", isCollection)
+                .add("createTime", createTime)
+                .add("openid", openid)
+                .add("video_url", video_url)
+                .add("role_type", role_type)
+                .add("birthda_day", birthda_day)
+                .toString();
     }
 }

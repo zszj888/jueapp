@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -58,12 +60,13 @@ public class RoleController {
     public ResultVo addRole(@RequestBody Role role) throws IOException {
         role.setCreateTime(LocalDateTime.now());
         role.setAge(Period.between(role.getBirthda_day(), LocalDate.now()).getYears());
-
         Role save = roleRepository.save(role);
         Path newPath = Paths.get(filePath, save.getOpenid(), String.valueOf(save.getId()));
         if (!Files.exists(newPath)) Files.createDirectories(newPath);
         Files.move(Paths.get(filePath, save.getOpenid(), save.getImg()),
                 newPath.resolve(save.getImg()));
+        save.setImgUrl(URI.create("files" + File.separator + save.getOpenid() + File.separator + save.getId()).toURL().toString());
+        roleRepository.saveAndFlush(save);
         return ResultVo.ok(save);
     }
 

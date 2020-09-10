@@ -65,7 +65,7 @@ public class LoginController {
         if (!Files.exists(Paths.get(filePath, openid))) {
             Files.createDirectories(Paths.get(filePath, openid));
         }
-        String fileName = UUID.randomUUID().toString();
+        String fileName = UUID.randomUUID().toString().replaceAll("-", "");
         if (Objects.nonNull(file)) {
             Path finalFileName = Paths.get(filePath, openid,
                     fileName + "." + StringUtils.getFilenameExtension(file.getOriginalFilename()));

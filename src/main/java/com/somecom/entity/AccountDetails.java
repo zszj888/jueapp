@@ -1,5 +1,7 @@
 package com.somecom.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,6 +17,7 @@ public class AccountDetails {
     private Integer id;
 
     @Column(name = "create_time")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createTime;
 
     public Integer getId() {
