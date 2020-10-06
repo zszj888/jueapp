@@ -1,8 +1,11 @@
 package com.somecom.controller;
 
 import com.somecom.entity.Role;
+import com.somecom.entity.User;
 import com.somecom.model.ResultVo;
 import com.somecom.repo.RoleRepository;
+import com.somecom.repo.UserRepository;
+import com.somecom.util.SystemUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,17 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
-import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Api(tags = "角色管理")
@@ -37,36 +32,26 @@ public class RoleController {
 
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @ApiOperation(value = "查询角色列表", notes = "默认查询全部，无分页")
     @GetMapping(path = "/getRoleList")
     public ResultVo getRoleList(Role role) {
         List<Role> roles = roleRepository.findAll(Example.of(role), Sort.by("createTime").descending());
-        roles.forEach(rol -> {
-            try {
-                rol.setImg(Base64.getEncoder()
-                        .encodeToString(Files.readAllBytes(Paths
-                                .get(filePath, rol.getOpenid(), String.valueOf(rol.getId()), rol.getImg()))));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
         return ResultVo.ok(roles);
     }
 
     @ApiOperation(value = "新增角色", notes = "前端做字段完整校验")
     @PostMapping("/addRoleInfo")
     @Transactional
-    public ResultVo addRole(@RequestBody Role role) throws IOException {
+    public ResultVo addRole(@RequestBody Role role) {
         role.setCreateTime(LocalDateTime.now());
-        role.setAge(Period.between(role.getBirthda_day(), LocalDate.now()).getYears());
         Role save = roleRepository.save(role);
-        Path newPath = Paths.get(filePath, save.getOpenid(), String.valueOf(save.getId()));
-        if (!Files.exists(newPath)) Files.createDirectories(newPath);
-        Files.move(Paths.get(filePath, save.getOpenid(), save.getImg()),
-                newPath.resolve(save.getImg()));
-        save.setImgUrl(URI.create("files" + File.separator + save.getOpenid() + File.separator + save.getId()).toURL().toString());
-        roleRepository.saveAndFlush(save);
+        Optional<User> one = userRepository.findOne(Example.of(new User(role.getOpenid())));
+        if (!one.isPresent())
+            return ResultVo.err("openid " + role.getOpenid() + "没有user info");
+        SystemUtil.login(one.get());
         return ResultVo.ok(save);
     }
 
