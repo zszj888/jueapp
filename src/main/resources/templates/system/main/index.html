@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/template :: header(~{::title},~{::link},~{::style})">
+    <style>
+        a {
+            color: #005980;
+        }
+
+        .widget-small {
+            background-color: #FFFFFF;
+            overflow: hidden;
+            text-align: center;
+            border-radius: 2px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
+        }
+
+        .widget-small .fa {
+            float: left;
+            width: 40%;
+            line-height: 80px;
+            color: #FFFFFF;
+        }
+
+        .widget-user .fa {
+            background-color: #029789;
+        }
+
+        .widget-visit .fa {
+            background-color: #17a2b8;
+        }
+
+        .widget-message .fa {
+            background-color: #fbad4c;
+        }
+
+        .widget-like .fa {
+            background-color: #ff646d;
+        }
+
+        .widget-small-info {
+            float: left;
+            text-align: left;
+            width: 40%;
+            margin-left: 20px;
+            margin-top: 18px;
+            line-height: 24px;
+        }
+
+        .widget-small-info h4 {
+            font-size: 18px;
+        }
+
+        .widget-small-info span {
+            font-size: 16px;
+        }
+
+        .project-introduce {
+            min-height: 466px;
+        }
+
+        .project-introduce h4 {
+            font-weight: bold;
+            margin-top: 12px;
+            margin-bottom: 8px;
+        }
+
+        .project-introduce li {
+            list-style: decimal;
+            margin-left: 28px;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .alert-info {
+            color: #31708f;
+            background-color: #d9edf7;
+            border-color: #bce8f1;
+        }
+    </style>
+
+</head>
+<body class="timo-layout-page">
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md3 layui-col-sm6 layui-col-xs12">
+        <div class="widget-small widget-user">
+            <i class="icon fa fa-users fa-3x"></i>
+            <div class="widget-small-info">
+                <h4>当前用户量</h4>
+                <span>2985</span>
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-md3 layui-col-sm6 layui-col-xs12">
+        <div class="widget-small widget-message">
+            <i class="icon fa fa-comments-o fa-3x"></i>
+            <div class="widget-small-info">
+                <h4>已支付订单</h4>
+                <span>296</span>
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-md3 layui-col-sm6 layui-col-xs12">
+        <div class="widget-small widget-like">
+            <i class="icon fa fa-star fa-3x"></i>
+            <div class="widget-small-info">
+                <h4>支付总金额</h4>
+                <span>9999999.00</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md8">
+        <div class="layui-card">
+            <div class="layui-card-header">报表统计</div>
+            <div class="layui-card-body">
+                <div _echarts_instance_="ec_1585040219100"
+                     id="divProgress"
+                     style="width: 100%; min-height: 500px; -webkit-tap-highlight-color: transparent; user-select: none; position: relative;">
+                    <div style="position: relative; overflow: hidden; width: 702px; height: 500px; padding: 0px; margin: 0px; border-width: 0px; cursor: default;">
+                        <canvas data-zr-dom-id="zr_0" height="500"
+                                style="position: absolute; left: 0px; top: 0px; width: 702px; height: 500px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"
+                                width="702"></canvas>
+                    </div>
+                    <div style="position: absolute; display: none; border-style: solid; white-space: nowrap; z-index: 9999999; transition: left 0.4s cubic-bezier(0.23, 1, 0.32, 1) 0s, top 0.4s cubic-bezier(0.23, 1, 0.32, 1) 0s; background-color: rgba(50, 50, 50, 0.7); border-width: 0px; border-color: rgb(51, 51, 51); border-radius: 4px; color: rgb(255, 255, 255); font: 14px / 21px &quot;Microsoft YaHei&quot;; padding: 5px; left: 81px; top: 208px; pointer-events: none;">
+                        周一<br><span
+                            style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:#3fb1e3;"></span>邮件营销:
+                        120<br><span
+                            style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:#6be6c1;"></span>联盟广告:
+                        220<br><span
+                            style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:#626c91;"></span>视频广告:
+                        150<br><span
+                            style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:#a0a7e6;"></span>直接访问:
+                        320<br><span
+                            style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:#c4ebad;"></span>搜索引擎:
+                        820
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:replace="common/template :: script"></script>
+<script src="http://cdn.staticfile.org/jquery/2.1.1-rc2/jquery.min.js"></script>
+<script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+<script type="text/javascript">
+    var myChart;
+    var test = 10
+    // 路径配置
+    require.config({
+        paths: {
+            echarts: 'http://echarts.baidu.com/build/dist'
+        }
+    });
+    // 使用
+    require(
+        [
+            'echarts',
+            'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+        ],
+        function (ec) {
+            // 基于准备好的dom，初始化echarts图表
+            myChart = ec.init(document.getElementById('divProgress'));
+            var option = {
+                tooltip: {
+                    show: true
+                },
+                animation: true,
+                legend: {
+                    data: ['订单量']
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: ["广州", "北京", "上海", "深圳", "南京", "重庆"]
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value'
+                    }
+                ],
+                series: [
+                    {
+                        "name": "销量",
+                        "type": "bar",
+                        "data": [90, 67, 63, 57, 56, 54]
+                    }
+                ]
+            };
+            // 为echarts对象加载数据
+            myChart.setOption(option);
+        }
+    );
+
+    //这里用setTimeout代替ajax请求进行演示
+
+    var data = [test, 5, 10, 40, 20, 10];
+    refreshData(data);
+
+    function refreshData(data) {
+        if (!myChart) {
+            return;
+        }
+
+        //更新数据
+        var option = myChart.getOption();
+        option.series[0].data = data;
+        myChart.setOption(option);
+    }
+</script>
+</body>
+</html>
+

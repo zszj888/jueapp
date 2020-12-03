@@ -1,18 +1,26 @@
 package com.somecom.controller;
 
 import com.somecom.entity.Role;
+import com.somecom.entity.RoleApply;
+import com.somecom.entity.Task;
+import com.somecom.entity.TaskApply;
+import com.somecom.entity.Transaction;
 import com.somecom.entity.User;
+import com.somecom.enums.TransactionType;
 import com.somecom.model.ResultVo;
-import com.somecom.repo.RoleRepository;
-import com.somecom.repo.TaskRepository;
+import com.somecom.repo.RoleApplyRepository;
+import com.somecom.repo.TaskApplyRepository;
+import com.somecom.repo.TransactionRepository;
 import com.somecom.repo.UserRepository;
-import com.somecom.util.SystemUtil;
+import com.somecom.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,50 +30,66 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Collections;
+import java.util.Comparator;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @Api(tags = "用户管理")
-@RequestMapping(path = "/api/v1")
+@RequestMapping(path = "/user")
 public class UserController {
     @Resource
     private UserRepository userRepository;
     @Resource
-    private RoleRepository roleRepository;
+    private UserService userService;
     @Resource
-    private TaskRepository taskRepository;
+    private TaskApplyRepository taskApplyRepository;
+    @Resource
+    private RoleApplyRepository roleApplyRepository;
+    @Resource
+    private TransactionRepository transactionRepository;
 
-    @ApiOperation(value = "收藏角色", notes = "角色大厅，收藏角色")
-    @GetMapping(path = "/favorRole")
-    @ApiImplicitParam(name = "roleId", required = true, dataType = "int", paramType = "query")
-    public ResultVo favorRole(Integer roleId) {
-        SystemUtil.currentUser().ifPresent(user -> {
-            Optional<Role> byId = roleRepository.findById(roleId);
-            byId.ifPresent(role -> {
-                user.setFavorRoles(Collections.singleton(role));
-                userRepository.save(user);
+    @ApiOperation(value = "提现", notes = "提现")
+    @PostMapping("/withdraw")
+    @Transactional
+    public ResultVo withdraw(@RequestBody Transaction body) {
+        if (Objects.nonNull(body.getUserId()) && Objects.nonNull(body.getAmount())) {
+            Optional<User> byId = userRepository.findById(body.getUserId());
+            byId.ifPresent(b -> {
+                User user = byId.get();
+                if (user.getBalance().compareTo(body.getAmount()) > 0) {
+                    Transaction transaction = new Transaction();
+                    transaction.setUserId(body.getUserId());
+                    transaction.setAmount(body.getAmount());
+                    transaction.setTime(LocalDateTime.now());
+                    transaction.setLastUpdateTime(LocalDateTime.now());
+                    transaction.setTransType(TransactionType.OUTCOME.getCode());
+                    transactionRepository.saveAndFlush(transaction);
+                    //todo 企业付款到微信余额
+                }else {
+                    throw  new IllegalArgumentException("余额不足");
+                }
             });
-            byId.orElseThrow(() -> new RuntimeException("角色" + roleId + "不存在"));
-        });
-        SystemUtil.currentUser().orElseThrow(() -> new RuntimeException("未登录"));
-        return ResultVo.ok();
+            byId.orElseThrow(() -> new IllegalArgumentException("用户未找到，id" + body.getUserId()));
+            return ResultVo.ok();
+        }
+        return ResultVo.err("userId必传");
+
     }
 
-    @ApiOperation(value = "收藏任务", notes = "任务大厅，收藏任务")
-    @GetMapping(path = "/favorTask")
-    public ResultVo favorTask(Integer taskId) {
-        SystemUtil.currentUser().ifPresent(user -> {
-            user.setFavorTasks(Collections.singleton(taskRepository.findById(taskId).get()));
-            userRepository.save(user);
-        });
-        SystemUtil.currentUser().orElseThrow(() -> new RuntimeException("未登录"));
-        return ResultVo.ok();
+    @ApiOperation(value = "查询余额明细", notes = "查询余额明细")
+    @GetMapping(path = "/balanceDetail/{userId}")
+    public ResultVo balanceDetail(@PathVariable("userId") Integer userId) {
+        Transaction transaction = new Transaction();
+        transaction.setUserId(userId);
+        return ResultVo.ok(transactionRepository.findAll(Example.of(transaction), Sort.by("time").descending()));
     }
 
     @ApiOperation(value = "根据OPENID查用户个人资料", notes = "传入openid，返回该用户的个人资料")
-    @GetMapping(path = "{openid}")
+    @GetMapping(path = "openid/{openid}")
     public ResultVo openid(@PathVariable(name = "openid") String openid) {
         return ResultVo.ok(userRepository.findOne(Example.of(new User(openid))));
     }
@@ -76,11 +100,30 @@ public class UserController {
         return ResultVo.ok(userRepository.findAll(Example.of(example), Sort.by("createTime").descending()));
     }
 
+    @ApiOperation(value = "查单个用户", notes = "返回单个用户详情")
+    @ApiImplicitParam(paramType = "query")
+    @GetMapping(path = "/{id}")
+    public ResultVo getOne(@PathVariable("id") Integer id) {
+        Optional<User> byId = userRepository.findById(id);
+        byId.orElseThrow(() -> new IllegalArgumentException("不存在的用户ID" + id));
+        return ResultVo.ok(byId.get());
+    }
+
     @ApiOperation(value = "新增保存用户信息", notes = "注意确保字段的合法性")
     @PostMapping("/addUserInfo")
     public ResultVo addUser(@RequestBody User user) {
-        user.setCreateTime(LocalDateTime.now());
-        return ResultVo.ok(userRepository.save(user));
+        if (Objects.nonNull(user.getId())) {
+            Optional<User> byId = userRepository.findById(user.getId());
+            byId.ifPresent(b -> {
+                BeanUtils.copyProperties(user, b);
+                b.setBalance(BigDecimal.ZERO);
+                userRepository.save(b);
+                userService.save(b.toSysUser());
+            });
+            return ResultVo.ok();
+        }
+        return ResultVo.err("未登录");
+
     }
 
     @ApiOperation(value = "删除用户", notes = "注意确保字段的合法性")
@@ -96,6 +139,76 @@ public class UserController {
         Optional<User> one = userRepository.findById(user.getId());
         one.orElseThrow(IllegalAccessError::new);
         one.ifPresent(o -> BeanUtils.copyProperties(user, o));
+        userService.save(one.get().toSysUser());
         return ResultVo.ok(userRepository.save(one.get()));
+    }
+
+    @ApiOperation(value = "用户的任务", notes = "用户的所有任务列表")
+    @GetMapping("/{userId}/task")
+    public ResultVo task(@PathVariable("userId") Integer userId, Integer type) {
+        Optional<User> user = userRepository.findById(userId);
+        user.orElseThrow(() -> new IllegalArgumentException("Bad user id" + userId));
+        if (Objects.isNull(type)) {
+            return ResultVo.ok(user.get().getTasks());
+        }
+        //已发布
+        if (type == 0) {
+            return ResultVo.ok(user.get().getTasks().stream().filter(task -> task.getStatus().equals("已发布")).collect(Collectors.toList()));
+        }
+        //待确认
+        if (type == 1) {
+            return ResultVo.ok(user.get().getTasks().stream().filter(task -> task.getStatus().equals("待确认")).collect(Collectors.toList()));
+        }
+        //进行中
+        if (type == 2) {
+            return ResultVo.ok(user.get().getTasks().stream().filter(task -> task.getStatus().equals("进行中")).sorted(Comparator.comparing(Task::getId).reversed()).collect(Collectors.toList()));
+        }
+        //已完成
+        if (type == 3) {
+            return ResultVo.ok(user.get().getTasks().stream().filter(task -> "已完成".equals(task.getStatus())).sorted(Comparator.comparing(Task::getId).reversed())
+                    .collect(Collectors.toList()));
+        }
+        //已申请
+        if (type == 4) {
+            return ResultVo.ok(taskApplyRepository.findAll(Example.of(TaskApply.example(userId))).stream()
+                    .map(TaskApply::getTask).peek(task -> task.setRemrks("申请")).sorted(Comparator.comparing(Task::getId).reversed()).collect(Collectors.toList()));
+        }
+        return ResultVo.ok();
+    }
+
+    @ApiOperation(value = "用户的角色列表", notes = "用户的所有角色列表")
+    @GetMapping("/{userId}/role")
+    public ResultVo role(@PathVariable("userId") Integer userId, Integer type) {
+        Optional<User> user = userRepository.findById(userId);
+        user.orElseThrow(() -> new IllegalArgumentException("Bad user id" + userId));
+        if (Objects.isNull(type)) {
+            return ResultVo.ok(user.get().getRoles());
+        }
+        //已发布
+        if (type == 0) {
+            return ResultVo.ok(user.get().getRoles().stream().filter(r -> Objects.isNull(r.getApplyPersons()))
+                    .sorted(Comparator.comparing(Role::getId).reversed()).collect(Collectors.toList()));
+        }
+        //待确认
+        if (type == 1) {
+            return ResultVo.ok(user.get().getRoles().stream().filter(role -> StringUtils.hasText(role.getApplyPersons())
+                    && Objects.isNull(role.getAcceptedById())).sorted(Comparator.comparing(Role::getId).reversed()).collect(Collectors.toList()));
+        }
+        //进行中
+        if (type == 2) {
+            return ResultVo.ok(user.get().getRoles().stream().filter(role -> Objects.nonNull(role.getAcceptedById())
+                    && !"已完成".equals(role.getStatus())).sorted(Comparator.comparing(Role::getId).reversed()).collect(Collectors.toList()));
+        }
+        //已完成
+        if (type == 3) {
+            return ResultVo.ok(user.get().getRoles().stream().filter(role -> "已完成".equals(role.getStatus()))
+                    .collect(Collectors.toList()));
+        }
+        //已申请
+        if (type == 4) {
+            return ResultVo.ok(roleApplyRepository.findAll(Example.of(RoleApply.example(userId))).stream()
+                    .map(RoleApply::getRole).peek(role -> role.setRemrks("申请")).sorted(Comparator.comparing(Role::getId).reversed()).collect(Collectors.toList()));
+        }
+        return ResultVo.ok(user.get().getRoles());
     }
 }

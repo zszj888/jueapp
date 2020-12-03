@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/template :: header(~{::title},~{::link},~{::style})">
+</head>
+<body>
+<div class="layui-form timo-compile">
+    <form th:action="@{/admin/system/sysRole/save}">
+        <input name="id" th:if="${sysRole}" th:value="${sysRole.id}" type="hidden"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">角色标识</label>
+            <div class="layui-input-inline">
+                <input class="layui-input" name="name" placeholder="请输入角色编号" th:value="${sysRole?.name}" type="text">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">角色名称</label>
+            <div class="layui-input-inline">
+                <input class="layui-input" name="title" placeholder="请输入角色名称" th:value="${sysRole?.title}" type="text">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" name="remark" placeholder="请输入内容">[[${sysRole?.remark}]]</textarea>
+            </div>
+        </div>
+        <div class="layui-form-item timo-finally">
+            <button class="layui-btn ajax-submit"><i class="fa fa-check-circle"></i> 保存</button>
+            <button class="layui-btn btn-secondary close-popup"><i class="fa fa-times-circle"></i> 关闭</button>
+        </div>
+    </form>
+</div>
+<script th:replace="common/template :: script"></script>
+</body>
+</html>

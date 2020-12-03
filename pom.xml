@@ -17,9 +17,55 @@
     <properties>
         <java.version>1.8</java.version>
         <springfox.version>2.5.0</springfox.version>
+        <java.version>1.8</java.version>
+        <spring-boot-admin.version>2.2.1</spring-boot-admin.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+        <!--shiro权限管理框架版本：component.shiro-->
+        <shiro.version>1.4.0</shiro.version>
+        <lombok.version>1.18.2</lombok.version>
+        <ehcache.version>2.10.5</ehcache.version>
+        <mysql.connector.version>5.1.46</mysql.connector.version>
+        <jsoup.version>1.11.3</jsoup.version>
+        <!--shiro模板视图权限标签扩展：component.thymeleaf-->
+        <thymeleaf-shiro.version>2.0.0</thymeleaf-shiro.version>
+        <!--excel工具框架版本：component.excel-->
+        <poi.version>4.0.0</poi.version>
+        <!--jwt处理框架版本：component.jwt-->
+        <jwt.version>3.4.0</jwt.version>
+        <!--swagger2接口文档版本：component.jwt-->
+        <swagger.version>2.9.2</swagger.version>
+        <!--swagger-knife4j接口文档页面：component.jwt-->
+        <swagger.knife4j.version>2.0.1</swagger.knife4j.version>
+        <google.findbugs.version>3.0.1</google.findbugs.version>
+        <skipTests>true</skipTests>
     </properties>
 
     <dependencies>
+        <!--        <dependency>-->
+        <!--            <groupId>com.thoughtworks.xstream</groupId>-->
+        <!--            <artifactId>com.springsource.com.thoughtworks.xstream</artifactId>-->
+        <!--            <version>1.4.1</version>-->
+        <!--        </dependency>-->
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.11.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>nz.net.ultraq.thymeleaf</groupId>
+            <artifactId>thymeleaf-layout-dialect</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -31,15 +77,15 @@
             <version>4.2</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.codecentric</groupId>
-            <artifactId>spring-boot-admin-starter-client</artifactId>
-            <version>2.1.6</version>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-starter-security</artifactId>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>de.codecentric</groupId>-->
+        <!--            <artifactId>spring-boot-admin-starter-client</artifactId>-->
+        <!--            <version>2.1.6</version>-->
+        <!--        </dependency>-->
 
         <!-- 添加Swagger2依赖 -->
         <dependency>
@@ -69,9 +115,117 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.9</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.20</version>
+        </dependency>
+        <!--        spring-boot-starter-actuator-2.2.6.RELEASE-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.shiro</groupId>-->
+        <!--            <artifactId>shiro-spring</artifactId>-->
+        <!--            <version>${shiro.version}</version>-->
+        <!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.shiro</groupId>-->
+        <!--            <artifactId>shiro-ehcache</artifactId>-->
+        <!--            <version>${shiro.version}</version>-->
+        <!--            <exclusions>-->
+        <!--                <exclusion>-->
+        <!--                    <artifactId>ehcache-core</artifactId>-->
+        <!--                    <groupId>net.sf.ehcache</groupId>-->
+        <!--                </exclusion>-->
+        <!--            </exclusions>-->
+        <!--        </dependency>-->
+        <!--ehcache缓存框架-->
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>2.10.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons</artifactId>
+            <version>2.1.6.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>nz.net.ultraq.thymeleaf</groupId>
+            <artifactId>thymeleaf-layout-dialect</artifactId>
+        </dependency>
+        <!-- <dependency>
+             <groupId>de.codecentric</groupId>
+             <artifactId>spring-boot-admin-starter-client</artifactId>
+         </dependency>-->
+        <!--<dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>2.1.2</version>
+        </dependency>-->
+        <!--html解析工具，处理xss攻击-->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.11.3</version>
+        </dependency>
+        <!--<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.github.theborakompanioni</groupId>-->
+        <!--            <artifactId>thymeleaf-extras-shiro</artifactId>-->
+        <!--            <version>${thymeleaf-shiro.version}</version>-->
+        <!--        </dependency>-->
+
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -87,6 +241,17 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.*</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+
+        </resources>
+
         <finalName>jueapp</finalName>
         <plugins>
             <plugin>

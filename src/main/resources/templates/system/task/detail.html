@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+>
+<head th:replace="common/template :: header(~{::title},~{::link},~{::style})">
+</head>
+<body>
+<div class="timo-detail-page">
+    <div class="timo-detail-title">任务信息</div>
+    <table class="layui-table timo-detail-table">
+        <tbody>
+        <tr>
+            <th width='100px'>编号</th>
+            <td th:text="${user.id}"></td>
+            <th width='100px'>任务名称</th>
+            <td th:text="${user.name}"></td>
+        </tr>
+        <tr>
+            <th>才艺要求</th>
+            <td th:text="${user.skill}"></td>
+            <th>任务介绍</th>
+            <td th:text="${user.desc}"></td>
+        </tr>
+        <tr>
+            <th>任务地点</th>
+            <td th:text="${user.position}"></td>
+            <th>演出总费用</th>
+            <td th:text="${user.fee}"></td>
+        </tr>
+        <tr>
+            <th>创建时间</th>
+            <td th:text="${user.createTime}"></td>
+            <th>任务有效期</th>
+            <td th:text="${user.validateTime}"></td>
+        </tr>
+        <tr>
+            <th>备注</th>
+            <td colspan="4" th:text="${user.remrks}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+<script th:replace="common/template :: script"></script>
+</body>
+</html>

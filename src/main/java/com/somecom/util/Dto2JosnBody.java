@@ -2,7 +2,7 @@ package com.somecom.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.somecom.entity.Role;
+import com.somecom.entity.Task;
 import org.springframework.util.ReflectionUtils;
 
 import java.time.LocalDateTime;
@@ -13,10 +13,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Dto2JosnBody {
-    public static void main(String[] args) throws JsonProcessingException {
-        System.out.println(convert(Role.class));
-    }
-
     /**
      * not all ,but typical
      */
@@ -37,6 +33,10 @@ public class Dto2JosnBody {
             {"java.lang.Date", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(LocalDateTime.now())},
             {"java.lang.Collection", "[]"},
     }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
+
+    public static void main(String[] args) throws JsonProcessingException {
+        System.out.println(convert(Task.class));
+    }
 
     public static String convert(Class<?> clz) {
         Map<String, String> jsonBody = new HashMap<>();

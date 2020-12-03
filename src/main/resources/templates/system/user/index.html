@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/template :: header(~{::title},~{::link},~{::style})">
+    <link rel="stylesheet" th:href="@{/lib/zTree_v3/css/zTreeStyle/zTreeStyle.css}" type="text/css">
+</head>
+<body class="timo-layout-page">
+<div class="layui-card">
+    <div class="layui-card-header timo-card-header">
+        <span><i class="fa fa-bars"></i> 用户管理</span>
+        <i class="layui-icon layui-icon-refresh refresh-btn"></i>
+        <a shiro:hasPermission="system:user:export" th:href="@{/admin/system/user/export}"><i
+                class="fa fa-download"></i></a>
+    </div>
+    <div class="layui-card-body">
+        <div class="layui-row timo-card-screen put-row">
+            <div class="pull-left layui-form-pane timo-search-box">
+
+                <div class="layui-inline">
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" name="username"
+                               placeholder="请输入用户名" type="text">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" name="nickname"
+                               placeholder="请输入手机号码" type="text">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">状态</label>
+                    <div class="layui-input-block timo-search-status">
+                        <select class="layui-select">
+                            <option value="1">正常</option>
+                            <option value="2">冻结</option>
+                            <option value="3">删除</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn timo-search-btn">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="pull-right screen-btn-group">
+            <div class="btn-group-right">
+                <button class="layui-btn open-popup" data-size="auto" data-title="添加用户"
+                        shiro:hasPermission="system:user:add" th:attr="data-url=@{/admin/system/user/add}">
+                    <i class="fa fa-plus"></i> 添加
+                </button>
+                <div class="btn-group" shiro:hasPermission="system:user:status">
+                    <button class="layui-btn">操作<span class="caret"></span></button>
+                    <dl class="layui-nav-child layui-anim layui-anim-upbit">
+                        <dd><a class="ajax-status" th:href="@{/admin/system/user/status/ok}">启用</a></dd>
+                        <dd><a class="ajax-status" th:href="@{/admin/system/user/status/freezed}">冻结</a></dd>
+                        <dd><a class="ajax-status" th:href="@{/admin/system/user/status/delete}">删除</a></dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="timo-table-wrap">
+        <table class="layui-table timo-table">
+            <thead>
+            <tr>
+                <th class="timo-table-checkbox">
+                    <label class="timo-checkbox"><input type="checkbox">
+                        <i class="layui-icon layui-icon-ok"></i></label>
+                </th>
+                <th class="sortable" data-field="username">用户名</th>
+                <th class="sortable" data-field="nickname">用户昵称</th>
+                <th class="sortable" data-field="sex">性别</th>
+                <th class="sortable" data-field="phone">电话</th>
+                <th class="sortable" data-field="address">地址</th>
+                <th class="sortable" data-field="createDate">创建时间</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item:${list}">
+                <td><label class="timo-checkbox"><input th:value="${item.id}" type="checkbox">
+                    <i class="layui-icon layui-icon-ok"></i></label></td>
+                <td th:text="${item.username}">用户名</td>
+                <td th:text="${item.nickname}">用户昵称</td>
+                <td th:text="${#dicts.keyValue('USER_SEX', item.sex)}">性别</td>
+                <td th:text="${item.phone}">电话</td>
+                <td th:text="${item.address}">地址</td>
+                <td th:text="${#dates.format(item.createDate, 'yyyy-MM-dd HH:mm:ss')}">创建时间</td>
+                <td th:text="${#dicts.dataStatus(item.status)}">状态</td>
+                <td>
+                    <a class="open-popup" data-size="600,570" data-title="编辑用户"
+                       href="#" th:attr="data-url=@{'/admin/system/user/edit/'+${item.id}}">编辑</a>
+                    <a class="open-popup" data-size="800,600"
+                       data-title="详细信息"
+                       href="#" th:attr="data-url=@{'/admin/system/user/detail/'+${item.id}}">详细</a>
+                    <a class="ajax-get" th:attr="data-msg='您是否删除'+${item.nickname}"
+                       th:href="@{/admin/system/user/status/delete(ids=${item.id})}">删除</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:replace="common/fragment :: page"></div>
+</div>
+</div>
+<script th:replace="common/template :: script"></script>
+<script th:src="@{/js/plugins/jquery-2.2.4.min.js}" type="text/javascript"></script>
+<script th:src="@{/lib/zTree_v3/js/jquery.ztree.core.min.js}" type="text/javascript"></script>
+<script th:src="@{/js/timoTree.js}" type="text/javascript"></script>
+<script type="text/javascript">
+    var local = window.localStorage;
+    // 树形菜单
+    $.fn.selectTree({
+        rootTree: '全部',
+        onSelected: function (treeNode) {
+            local.setItem('deptTitle', treeNode.name);
+        }
+    });
+</script>
+</body>
+</html>

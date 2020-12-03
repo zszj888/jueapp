@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+>
+<head th:replace="common/template :: header(~{::title},~{::link},~{::style})">
+</head>
+<body>
+<div class="timo-detail-page">
+    <table class="layui-table timo-detail-table">
+        <tbody>
+        <tr>
+            <th width='100px'>文件编号</th>
+            <td th:text="${file.id}"></td>
+            <th width='100px'>文件名称</th>
+            <td th:text="${file.name}"></td>
+        </tr>
+        <tr>
+            <th>存储路径</th>
+            <td th:text="${file.path}"></td>
+            <th>是否免费</th>
+            <td th:text="${#dicts.keyValue('FILE_TYPE', file.mime)}"></td>
+        </tr>
+        <tr>
+            <th>专业分类</th>
+            <td th:text="${file.catalog}"></td>
+            <th>文件类型</th>
+            <td th:text="${#dicts.keyValue('FREE', file.free)}"></td>
+        </tr>
+        <tr>
+            <th>创建时间</th>
+            <td th:text="${#dates.format(file.createDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script th:replace="common/template :: script"></script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+>
+<head th:replace="common/template :: header(~{::title},~{::link},~{::style})">
+    <link rel="stylesheet" th:href="@{/lib/zTree_v3/css/zTreeStyle/zTreeStyle.css}" type="text/css">
+</head>
+<body>
+<div class="layui-form timo-compile">
+    <form th:action="@{/admin/system/file/save}">
+        <input id="ids" name="ids" type="hidden"/>
+
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">外链视频</li>
+                <li>本地上传</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">外链地址：</label>
+                        <input class="layui-input" name="path" placeholder="请输入外部视频连接地址" th:value="${file?.path}"
+                               type="text">
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">课程名称：</label>
+                        <input class="layui-input" name="name" placeholder="请输入外部视频课程名称" th:value="${file?.name}"
+                               type="text">
+                    </div>
+                </div>
+                <div class="layui-tab-item">
+                    <div class="layui-form-item">
+                        <div class="layui-upload" style="margin-left: 40px !important;">
+                            <button class="layui-btn layui-btn-normal" id="testList" type="button">选择多文件</button>
+                            <div class="layui-upload-list">
+                                <table class="layui-table">
+                                    <thead>
+                                    <tr>
+                                        <th>文件名</th>
+                                        <th>大小</th>
+                                        <th>上传进度</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="demoList"></tbody>
+                                </table>
+                            </div>
+                            <button class="layui-btn" id="testListAction" type="button">开始上传</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label  required">专业分类</label>
+            <div class="layui-input-inline">
+                <input class="layui-input" name="catalog" placeholder="请输入文件分类" th:value="${file?.catalog}" type="text">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label required">是否免费</label>
+            <div class="layui-input-inline">
+                <input checked name="free" title="收费" type="radio" value="0">
+                <div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i>
+                    <div>收费</div>
+                </div>
+                <input name="free" th:checked="${file?.free} eq 1" title="免费" type="radio" value="1">
+                <div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i>
+                    <div>免费</div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item timo-finally">
+            <button class="layui-btn ajax-submit"><i class="fa fa-check-circle"></i> 保存</button>
+            <button class="layui-btn btn-secondary close-popup"><i class="fa fa-times-circle"></i> 关闭</button>
+        </div>
+    </form>
+</div>
+<script th:replace="common/template :: script"></script>
+<script>
+    layui.use(['upload', 'element'], function () {
+        var $ = layui.jquery
+            , upload = layui.upload, element = layui.element;
+        var ids = $('#ids');
+        var demoListView = $('#demoList')
+            , uploadListIns = upload.render({
+            elem: '#testList'
+            , url: "http://" + window.location.host + "/upload/image"
+            , accept: 'file'
+            , multiple: true
+            , auto: false
+            , bindAction: '#testListAction'
+            , progress: function (value) {//上传进度回调 value进度值
+                element.progress('demoList', value + '%')//设置页面进度条
+            }
+            , xhr: function (index, e) {
+                var percent = e.loaded / e.total;//计算百分比
+                percent = parseFloat(percent.toFixed(2));
+                element.progress('progress_' + index + '', percent * 100 + '%');
+                console.log("-----" + percent * 100 + '%');
+            }
+            // , data: JSON.stringify(Param)
+            , choose: function (obj) {
+                ids.val("");
+                var files = this.files = obj.pushFile();
+                //读取本地文件
+                obj.preview(function (index, file, result) {
+                    var tr = $(['<tr id="upload-' + index + '">'
+                        , '<td>' + file.name + '</td>'
+                        , '<td>' + (file.size / 1024).toFixed(1) + 'kb</td>'
+                        , '<td><div class="layui-progress layui-progress-big" lay-filter="progress_' + index + '" lay-showPercent="true"><div class="layui-progress-bar" lay-percent="0%"></div></div></td>'
+                        , '<td>等待上传</td>'
+                        , '<td>'
+                        , '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
+                        , '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
+                        , '</td>'
+                        , '</tr>'].join(''));
+
+                    tr.find('.demo-reload').on('click', function () {
+                        obj.upload(index, file);
+                    });
+
+                    //删除
+                    tr.find('.demo-delete').on('click', function () {
+                        delete files[index]; //删除对应的文件
+                        tr.remove();
+                        uploadListIns.config.elem.next()[0].value = '';
+                    });
+
+                    demoListView.append(tr);
+                });
+            }
+            , done: function (res, index, upload) {
+                if (res.code === 200) {
+                    var tr = demoListView.find('tr#upload-' + index)
+                        , tds = tr.children();
+                    tds.eq(3).html('<span style="color: #5FB878;">上传成功</span>');
+
+                    ids.val(ids.val() + res.data.id + ",");
+                    tds.eq(4).html('');
+                    return delete this.files[index];
+                }
+                this.error(index, upload);
+            }
+            , error: function (index, upload) {
+                var tr = demoListView.find('tr#upload-' + index)
+                    , tds = tr.children();
+                tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
+                tds.eq(3).find('.demo-reload').removeClass('layui-hide');
+            }
+        });
+    });
+</script>
+</body>
+</html>
