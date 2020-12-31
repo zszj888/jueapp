@@ -41,11 +41,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -171,6 +174,7 @@ public class SysUserController {
 
         // 保存数据
         user.setRealNameAuth(0);
+        user.setCreateDate(Timestamp.from(Instant.now()));
         userService.save(user);
         return ResultVoUtil.SAVE_SUCCESS;
     }

@@ -9,8 +9,8 @@
     <div class="layui-card-header timo-card-header">
         <span><i class="fa fa-bars"></i> 用户管理</span>
         <i class="layui-icon layui-icon-refresh refresh-btn"></i>
-        <a shiro:hasPermission="system:user:export" th:href="@{/admin/system/user/export}"><i
-                class="fa fa-download"></i></a>
+<!--        <a shiro:hasPermission="system:user:export" th:href="@{/admin/system/user/export}"><i-->
+<!--                class="fa fa-download"></i></a>-->
     </div>
     <div class="layui-card-body">
         <div class="layui-row timo-card-screen put-row">
@@ -96,7 +96,7 @@
                 <th class="sortable" data-field="nickname">用户昵称</th>
                 <th class="sortable" data-field="sex">性别</th>
                 <th class="sortable" data-field="phone">电话</th>
-                <th class="sortable" data-field="address">地址</th>
+<!--                <th class="sortable" data-field="address">地址</th>-->
                 <th class="sortable" data-field="currentMonthMoney">当月成交额</th>
                 <th class="sortable" data-field="lastMonthMoney">上月成交额</th>
                 <th class="sortable" data-field="createDate">创建时间</th>
@@ -112,7 +112,7 @@
                 <td th:text="${item.nickname}">用户昵称</td>
                 <td th:text="${#dicts.keyValue('USER_SEX', item.sex)}">性别</td>
                 <td th:text="${item.phone}">电话</td>
-                <td th:text="${item.address}">地址</td>
+<!--                <td th:text="${item.address}">地址</td>-->
                 <td th:text="${item.currentMonthMoney}">当月成交额</td>
                 <td th:text="${item.lastMonthMoney}">上月成交额</td>
                 <td th:text="${#dates.format(item.createDate, 'yyyy-MM-dd HH:mm:ss')}">创建时间</td>
