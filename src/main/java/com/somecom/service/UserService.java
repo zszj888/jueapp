@@ -8,12 +8,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * @author 小懒虫
+ * @author Sam
  * @date 2018/8/14
  */
 public interface UserService {
 
+
     SysUser login(SysUser u);
+
+    SysUser findByOpenId(String openId);
 
     /**
      * 获取分页列表数据

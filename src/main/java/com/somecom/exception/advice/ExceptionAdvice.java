@@ -3,7 +3,7 @@ package com.somecom.exception.advice;
 /**
  * 异常通知器接口
  *
- * @author 小懒虫
+ * @author Sam
  * @date 2019/4/5
  */
 public interface ExceptionAdvice {

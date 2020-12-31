@@ -31,7 +31,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * @author 小懒虫
+ * @author Sam
  * @date 2018/8/14
  */
 @Controller
@@ -96,6 +96,7 @@ public class MainController {
      */
     @GetMapping("/index")
     public String index(Model model) {
+
         return "system/main/index";
     }
 
@@ -110,7 +111,7 @@ public class MainController {
         return "system/main/userInfo";
     }
 
-    /* *//**
+    /*
      * 修改用户头像
      *//*
     @PostMapping("/userPicture")

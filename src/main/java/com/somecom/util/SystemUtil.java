@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public class SystemUtil {
     private static final String CURRENT_USER = "CURRENT_USER";
-    private static final String CURRENT_ADMIN = "CURRENT_ADMIN";
+    public static final String CURRENT_ADMIN = "CURRENT_ADMIN";
 
     public static Optional<SysUser> currentAdmin() {
         ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();

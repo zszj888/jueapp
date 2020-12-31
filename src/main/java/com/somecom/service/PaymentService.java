@@ -123,7 +123,7 @@ public class PaymentService {
      */
     private Map<String, Object> prePay(WechatPayParam wechatPayParam) {
         Map<String, Object> result = new HashMap<>();
-
+        result.put("outTradeNo",wechatPayParam.getOrderId());
         String fee = wechatPayParam.getFee().multiply(BigDecimal.valueOf(100)).intValue() + "";
 
         //生成的随机字符串
@@ -180,6 +180,7 @@ public class PaymentService {
             return result;
         }
 
+        assert map != null;
         String return_code = (String) map.get("return_code");//返回状态码
 
         if (return_code.equals("SUCCESS")) {

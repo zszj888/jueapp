@@ -39,7 +39,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.persistence.criteria.Predicate;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -118,19 +120,73 @@ public class RoleController {
         return ResultVo.ok();
     }
 
+    @ApiOperation(value = "申请角色预生成订单", notes = "申请角色预生成订单")
+    @GetMapping("/{roleId}/preApplyBy/{userId}")
+    @Transactional
+    public ResultVo preApply(@PathVariable("userId") Integer userId, @PathVariable("roleId") Integer roleId) {
+        Optional<Role> byId = roleRepository.findById(roleId);
+        final ResultVo[] result = {new ResultVo()};
+        byId.ifPresent(role -> {
+            //支付
+            Optional<User> currentOperator = userRepository.findById(userId);
+            currentOperator.orElseThrow(() -> new IllegalArgumentException("请重新登录"));
+
+            PayOrder payOrder = new PayOrder();
+            payOrder.setBody("角er-达人征用");
+            payOrder.setOwner(role.getId());
+            payOrder.setBusinessId(roleId);
+            payOrder.setBusinessType(BusinessType.ROLE.getCode());
+            payOrder.setCreateBy(userId);
+            payOrder.setCreateTime(LocalDateTime.now());
+            //计算手本次支付应付续费
+            BigDecimal charge = role.getFee().multiply(HANDLE_RATE).max(MIN_CHARGE);
+            payOrder.setFee(role.getFee().add(charge));
+            //原始费用+手续费=最终支付金额
+            payOrder.setOriginFee(role.getFee());
+            payOrder.setHandleRate(HANDLE_RATE);
+            payOrder.setMinCharge(MIN_CHARGE);
+            payOrder.setStatus(PayOrderStatusEnum.NEW.getCode());
+
+            WechatPayParam wechatPayParam = new WechatPayParam();
+            wechatPayParam.setBody(payOrder.getBody());
+            wechatPayParam.setFee(payOrder.getFee());
+            wechatPayParam.setOpenId(currentOperator.get().getOpenid());
+            String s = System.currentTimeMillis() + UUID.randomUUID().toString();
+            String outTradeNo = PayUtil.md5(s);
+            wechatPayParam.setOrderId(outTradeNo);
+            payOrder.setOutTradeNo(outTradeNo);
+            result[0] = paymentService.pay(wechatPayParam);
+            if (result[0].getRet() != 200) {
+                throw new RuntimeException("统一下单失败，事务回滚，详情：" + result[0].getMsg());
+            }
+            payOrder.setStatus(PayOrderStatusEnum.WAIT_FOR_PAY.getCode());
+            payOrderRepository.saveAndFlush(payOrder);
+        });
+        byId.orElseThrow(() -> new IllegalArgumentException("No role of id [" + roleId + "] found."));
+        return result[0];
+    }
+
+
     @ApiOperation(value = "申请角色", notes = "申请角色并付款")
     @GetMapping("/{roleId}/applyBy/{userId}")
     @Transactional
-    public ResultVo apply(@PathVariable("userId") Integer userId, @PathVariable("roleId") Integer roleId) {
+    public ResultVo apply(@PathVariable("userId") Integer userId, @PathVariable("roleId") Integer roleId, PayOrder orderModel) {
         Optional<Role> byId = roleRepository.findById(roleId);
         final ResultVo[] result = {new ResultVo()};
         byId.ifPresent(role -> {
             Set<Integer> set = new HashSet<>();
-            if (Objects.nonNull(role.getApplyPersons())) {
-                result[0].setRet(600);
-                result[0].setMsg("抱歉，角er已被征用，请选择其它角er或者等待该角er空闲");
-                result[0].setData("已被" + role.getApplyPersons() + "征用");
-            } else {
+            if (orderModel.getStatus() == 2) {
+                Optional<PayOrder> one = payOrderRepository.findOne(Example.of(orderModel));
+                one.orElseThrow(() -> new IllegalArgumentException("No payOrder of id [" + orderModel.getOutTradeNo() + "] found."));
+                one.get().setStatus(orderModel.getStatus());
+                payOrderRepository.saveAndFlush(one.get());
+
+                if (Objects.nonNull(role.getApplyPersons())) {
+//                result[0].setRet(600);
+//                result[0].setMsg("抱歉，角er已被征用，请选择其它角er或者等待该角er空闲");
+//                result[0].setData("已被" + role.getApplyPersons() + "征用");
+                    Arrays.stream(StringUtils.tokenizeToStringArray(role.getApplyPersons(), ",")).map(Integer::valueOf).forEach(set::add);
+                }
                 set.add(userId);
                 role.setStatus("待确认");
                 role.setApplyPersons(StringUtils.collectionToCommaDelimitedString(set));
@@ -143,38 +199,13 @@ public class RoleController {
                 if (CollectionUtils.isEmpty(all)) {
                     roleApplyRepository.save(roleApply);
                 }
-
-                //支付
-                Optional<User> byId1 = userRepository.findById(userId);
-                byId1.orElseThrow(() -> new IllegalArgumentException("当前操作用户不存在"));
-
-                PayOrder payOrder = new PayOrder();
-                payOrder.setBody("角er-角色征用");
-                payOrder.setBusinessId(roleId);
-                payOrder.setBusinessType(BusinessType.ROLE.getCode());
-                payOrder.setCreateBy(userId);
-                //计算手本次支付应付续费
-                BigDecimal charge = role.getFee().multiply(HANDLE_RATE).max(MIN_CHARGE);
-                payOrder.setFee(role.getFee().add(charge));
-                payOrder.setHandleRate(HANDLE_RATE);
-                payOrder.setMinCharge(MIN_CHARGE);
-                payOrder.setStatus(PayOrderStatusEnum.NEW.getCode());
-
-                WechatPayParam wechatPayParam = new WechatPayParam();
-                wechatPayParam.setBody(payOrder.getBody());
-                wechatPayParam.setFee(payOrder.getFee());
-                wechatPayParam.setOpenId(byId1.get().getOpenid());
-                String s = System.currentTimeMillis() + UUID.randomUUID().toString();
-                String outTradeNo = PayUtil.md5(s);
-                wechatPayParam.setOrderId(outTradeNo);
-                payOrder.setOutTradeNo(outTradeNo);
-                result[0] = paymentService.pay(wechatPayParam);
-                if (result[0].getRet() != 200) {
-                    throw new RuntimeException("统一下单失败，事务回滚，详情：" + result[0].getMsg());
-                }
-                payOrder.setStatus(PayOrderStatusEnum.WAIT_FOR_PAY.getCode());
-                payOrderRepository.saveAndFlush(payOrder);
+            } else if (orderModel.getStatus() == 3) {
+                Optional<PayOrder> one = payOrderRepository.findOne(Example.of(orderModel));
+                one.orElseThrow(() -> new IllegalArgumentException("No payOrder of id [" + orderModel.getOutTradeNo() + "] found."));
+                one.get().setStatus(orderModel.getStatus());
+                payOrderRepository.saveAndFlush(one.get());
             }
+
         });
         byId.orElseThrow(() -> new IllegalArgumentException("No role of id [" + roleId + "] found."));
         return result[0];
@@ -199,17 +230,17 @@ public class RoleController {
             if (role.getId() != null) {
                 preList.add(cb.equal(root.get("id").as(Integer.class), role.getId()));
             }
-            if (StringUtils.hasText(role.getName())) {
-                preList.add(cb.like(root.get("name").as(String.class), "%" + role.getName() + "%"));
+            if (StringUtils.hasText(role.getType())) {
+                preList.add(cb.equal(root.get("type").as(String.class), role.getType()));
             }
-            if (StringUtils.hasText(role.getSkill())) {
-                preList.add(cb.like(root.get("skill").as(String.class), "%" + role.getSkill() + "%"));
+            if (StringUtils.hasText(role.getRemark()) && StringUtils.hasText(role.getPosition())) {
+                preList.add(cb.or(cb.like(root.get("remark").as(String.class), "%" + role.getRemark() + "%"),
+                        cb.like(root.get("position").as(String.class), "%" + role.getPosition() + "%")));
             }
 
             Predicate[] pres = new Predicate[preList.size()];
             return query.where(preList.toArray(pres)).getRestriction();
         }, page);
-        ////
         if (roles.isEmpty()) {
             return ResultVo.ok();
         }

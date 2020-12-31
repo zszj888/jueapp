@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 通用：记录数据状态的行为
  *
- * @author 小懒虫
+ * @author Sam
  * @date 2018/10/14
  */
 public class StatusAction extends BaseActionMap {

@@ -8,7 +8,7 @@ import org.springframework.util.StringUtils;
 /**
  * 项目配置项
  *
- * @author 小懒虫
+ * @author Sam
  * @date 2018/11/6
  */
 @Data

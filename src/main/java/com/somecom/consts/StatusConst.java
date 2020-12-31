@@ -3,7 +3,7 @@ package com.somecom.consts;
 /**
  * 数据状态常量
  *
- * @author 小懒虫
+ * @author Sam
  * @date 2019/2/22
  */
 public class StatusConst {

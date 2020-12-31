@@ -39,6 +39,8 @@ import javax.annotation.Resource;
 import javax.persistence.criteria.Predicate;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -188,11 +190,16 @@ public class TaskController {
     @ApiOperation(value = "查询任务列表", notes = "默认查询全部，有分页")
     @GetMapping(path = "/list/{userId}/{index}")
     public ResultVo getTaskList(Task example, @PathVariable("userId") Integer userId, @PathVariable("index") Integer index) {
+        if (StringUtils.hasText(example.getPosition()) && !StringUtils.hasText(example.getSkill()) ) {
+            example.setSkill(example.getPosition());
+        }
+        if (StringUtils.hasText(example.getSkill()) && !StringUtils.hasText(example.getPosition()) ) {
+            example.setPosition(example.getSkill());
+        }
         Page<Task> tasks = taskRepository.findAll((Specification<Task>) (root, query, criteriaBuilder) -> {
-            Predicate name, skill;
-            name = criteriaBuilder.like(root.get("name"), "%" + example.getName() + "%");
-            skill = criteriaBuilder.like(root.get("skill"), "%" + example.getSkill() + "%");
-            return query.where(name, skill).getRestriction();
+            Predicate position = criteriaBuilder.like(root.get("position"), "%" + example.getPosition() + "%");
+            Predicate skill = criteriaBuilder.like(root.get("skill"), "%" + example.getSkill() + "%");
+            return query.where(criteriaBuilder.or(position, skill)).getRestriction();
         }, PageSort.of(index));
         if (CollectionUtils.isEmpty(tasks.getContent())) {
             return ResultVo.ok();
@@ -208,6 +215,7 @@ public class TaskController {
                 }
             });
         }
+        tasks.getContent().forEach(task -> task.setValidate(task.getTaskTime().isBefore(LocalDateTime.now())));
         return ResultVo.ok(tasks.getContent());
     }
 

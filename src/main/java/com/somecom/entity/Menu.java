@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @author 小懒虫
+ * @author Sam
  * @date 2018/8/14
  */
 @Data
@@ -75,9 +75,9 @@ public class Menu implements Serializable {
     private SysUser updateBy;
     private Byte status = SystemDataStatusEnum.OK.getCode();
 
-    @ManyToMany(mappedBy = "menus")
-    @JsonIgnore
-    private Set<SysRole> sysRoles = new HashSet<>(0);
+//    @ManyToMany(mappedBy = "menus")
+//    @JsonIgnore
+//    private Set<SysRole> sysRoles = new HashSet<>(0);
 
     @Transient
     @JsonIgnore

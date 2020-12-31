@@ -18,7 +18,7 @@ import java.util.Set;
 /**
  * Shiro工具类
  *
- * @author 小懒虫
+ * @author Sam
  * @date 2018/8/14
  */
 public class ShiroUtil {
@@ -72,8 +72,8 @@ public class ShiroUtil {
 //            }
 //        }
         Optional<SysUser> sysUser = SystemUtil.currentAdmin();
-        sysUser.orElseThrow(() -> new ResultExceptionError("请登录"));
-        return sysUser.get();
+//        sysUser.orElseThrow(() -> new ResultExceptionError("请登录"));
+        return sysUser.orElse(null);
     }
 
     /**

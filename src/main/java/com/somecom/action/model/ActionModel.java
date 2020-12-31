@@ -3,7 +3,7 @@ package com.somecom.action.model;
 import lombok.Getter;
 
 /**
- * @author 小懒虫
+ * @author Sam
  * @date 2018/10/15
  */
 @Getter

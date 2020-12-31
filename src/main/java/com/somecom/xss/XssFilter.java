@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 /**
  * Xss防护过滤器
  *
- * @author 小懒虫
+ * @author Sam
  * @date 2018/12/9
  */
 public class XssFilter implements Filter {

@@ -4,6 +4,23 @@ layui.use(['element', 'form', 'layer', 'upload'], function () {
     var layer = layui.layer; //加载layer模块
     var upload = layui.upload;  //加载upload模块
 
+    //审核通过
+    $("#approvePass").on("click",function (e) {
+        e.preventDefault();
+        var userId = $(this).siblings("input").val();
+        $.get('/admin/system/realNameAuth/approvePass/'+userId, function (result) {
+            $.fn.Messager(result);
+        });
+    })
+    //驳回审核
+    $("#approveReject").on("click",function (e) {
+        e.preventDefault();
+        var userId = $(this).siblings("input").val();
+        $.get('/admin/system/realNameAuth/approveReject/'+userId, function (result) {
+            $.fn.Messager(result);
+        });
+    })
+
     /* 侧边栏开关 */
     $(".side-toggle").on("click", function (e) {
         e.preventDefault();
@@ -144,7 +161,6 @@ layui.use(['element', 'form', 'layer', 'upload'], function () {
             $.fn.Messager(result);
         });
     });
-
     /* get方式异步 */
     $(document).on("click", ".ajax-get", function (e) {
         e.preventDefault();
@@ -269,10 +285,16 @@ layui.use(['element', 'form', 'layer', 'upload'], function () {
         var getSearch = "";
         // 搜索框参数
         $('.timo-search-box [name]').each(function (key, val) {
-            if ($(val).val() !== "" && $(val).val() !== undefined) {
+            if ($(val).val() !== "" && $(val).val() !== undefined && $(val).val() !== null) {
                 getSearch += $(val).attr("name") + "=" + $(val).val() + "&";
             }
         });
+
+        // 勾选只看经纪人
+        var broker = $('body > div.layui-card > div.layui-card-body > div.layui-row.timo-card-screen.put-row > div > div:nth-child(4) > label > input')
+        if (broker.length === 1 && broker[0].checked) {
+            getSearch +="broker=true&";
+        }
 
         // 页数参数
         var pageSize = $(".page-number").val();
@@ -330,39 +352,33 @@ layui.use(['element', 'form', 'layer', 'upload'], function () {
 
     /** 上传图片操作 */
     upload.render({
-        elem: '.upload-image' //绑定元素
-        , url: $('.upload-image').attr('up-url') //上传接口
-        , field: 'image' //文件域的字段名
-        , acceptMime: 'image/*' //选择文件类型
-        , exts: 'jpg|jpeg|png|gif' //支持的图片格式
-        , multiple: true //开启多文件选择
-        , choose: function (obj) {
-            obj.preview(function (index, file, result) {
-                var upload = $('.upload-image');
-                var name = upload.attr('name');
-                var show = upload.parents('.layui-form-item').children('.upload-show');
-                show.append("<div class='upload-item'><img src='" + result + "'/>" +
-                    "<input id='" + index + "' type='hidden' name='" + name + "'/>" +
-                    "<i class='upload-item-close layui-icon layui-icon-close'></i></div>");
-            });
-        }
+        elem: '#uploader' //绑定元素
+        , url: '/admin/system/juerole/upload' //上传接口
+        , accept: 'file'
+        , exts: 'xls|xlsx|xlsm' //支持的格式
+        , multiple: false //开启多文件选择
+        // , choose: function (obj) {
+        //     obj.preview(function (index, file, result) {
+        //         var upload = $('.upload-image');
+        //         var name = upload.attr('name');
+        //         var show = upload.parents('.layui-form-item').children('.upload-show');
+        //         show.append("<div class='upload-item'><img src='" + result + "'/>" +
+        //             "<input id='" + index + "' type='hidden' name='" + name + "'/>" +
+        //             "<i class='upload-item-close layui-icon layui-icon-close'></i></div>");
+        //     });
+        // }
         , done: function (res, index, upload) {
-            var field = $('.upload-image').attr('up-field') || 'id';
-            // 解决节点渲染和异步上传不同步问题
-            var interval = window.setInterval(function () {
-                var hide = $("#" + index);
-                if (hide.length > 0) {
-                    var item = hide.parent('.upload-item');
+            // var field = $('.upload-image').attr('up-field') || 'id';
+            // // 解决节点渲染和异步上传不同步问题
+            // var interval = window.setInterval(function () {
+            //     var hide = $("#" + index);
+            //     if (hide.length > 0) {
+            //         var item = hide.parent('.upload-item');
                     if (res.code === 200) {
-                        hide.val(res.data[field]);
-                        item.addClass('succeed');
-                    } else {
-                        hide.remove();
-                        item.addClass('error');
+                        $.fn.Messager(res);
                     }
-                    clearInterval(interval);
-                }
-            }, 100);
+                // }
+            // }, 100);
         }
     });
 

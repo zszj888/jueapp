@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * @author 小懒虫
+ * @author Sam
  * @date 2018/8/14
  */
 @Service
@@ -75,6 +75,11 @@ public class UserServiceImpl implements UserService {
         return sysUserRepository.findByPhone(u.getPhone());
     }
 
+    @Override
+    public SysUser findByOpenId(String openId) {
+        return sysUserRepository.findByOpenId(openId);
+    }
+
     /**
      * 获取分页列表数据
      *
@@ -88,8 +93,12 @@ public class UserServiceImpl implements UserService {
         PageRequest page = PageSort.pageRequest(Sort.Direction.ASC);
 
         // 使用Specification复杂查询
-        Page<SysUser> all = sysUserRepository.findAll((Specification<SysUser>) (root, query, cb) -> {
+        return sysUserRepository.findAll((Specification<SysUser>) (root, query, cb) -> {
             List<Predicate> preList = new ArrayList<>();
+
+            if (user.getBroker() != null) {
+                preList.add(cb.equal(root.get("broker").as(Boolean.class), user.getBroker()));
+            }
             if (user.getId() != null) {
                 preList.add(cb.equal(root.get("id").as(Long.class), user.getId()));
             }
@@ -98,6 +107,9 @@ public class UserServiceImpl implements UserService {
             }
             if (user.getNickname() != null) {
                 preList.add(cb.like(root.get("nickname").as(String.class), "%" + user.getNickname() + "%"));
+            }
+            if (user.getRealNameAuth() != null) {
+                preList.add(cb.equal(root.get("realNameAuth").as(Integer.class), user.getRealNameAuth()));
             }
 
             // 数据状态
@@ -108,7 +120,6 @@ public class UserServiceImpl implements UserService {
             Predicate[] pres = new Predicate[preList.size()];
             return query.where(preList.toArray(pres)).getRestriction();
         }, page);
-        return all;
     }
 
     /**
@@ -118,18 +129,6 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public SysUser save(SysUser user) {
-        String salt = EncryptUtil.getRandomSalt();
-        String encrypt = EncryptUtil.encrypt(user.getPassword(), salt);
-        user.setPassword(encrypt);
-        user.setSalt(salt);
-        if (Objects.nonNull(sysUserRepository.findByPhone(user.getPhone()))) {
-            return new SysUser();
-        }
-        if (Objects.isNull(user.getSex())) {
-            user.setSex((byte) 1);
-        }
-        user.setCreateDate(Timestamp.from(Instant.now()));
-        user.setUpdateDate(Timestamp.from(Instant.now()));
         return sysUserRepository.save(user);
     }
 

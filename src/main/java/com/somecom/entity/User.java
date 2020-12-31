@@ -6,6 +6,7 @@ import lombok.ToString;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
@@ -16,6 +17,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
+
+import static javax.persistence.ConstraintMode.NO_CONSTRAINT;
 
 @ToString(callSuper = true)
 @Entity
@@ -51,17 +54,29 @@ public class User extends BaseEntity {
     private byte broker;
     private String bankCard;
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "create_by_id", referencedColumnName = "id")
+    @JoinColumn(name = "create_by_id", referencedColumnName = "id", foreignKey = @ForeignKey(NO_CONSTRAINT))
     private Set<Task> tasks;
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "create_by_id", referencedColumnName = "id")
+    @JoinColumn(name = "create_by_id", referencedColumnName = "id", foreignKey = @ForeignKey(NO_CONSTRAINT))
     private Set<Role> roles;
+    @Column(name = "real_name_auth",columnDefinition = "tinyint unsigned not null default 0")
+    //0：未实名，1：已实名，2：待审核，3：审核被驳回（未通过）
+    private Integer realNameAuth;
+
 
     public User() {
     }
 
     public User(String openid) {
         this.openid = openid;
+    }
+
+    public Integer getRealNameAuth() {
+        return realNameAuth;
+    }
+
+    public void setRealNameAuth(Integer realNameAuth) {
+        this.realNameAuth = realNameAuth;
     }
 
     public Integer getTalentId() {
@@ -239,13 +254,16 @@ public class User extends BaseEntity {
 
     public SysUser toSysUser() {
         SysUser user = new SysUser();
-        user.setUsername(this.getName());
-        user.setCreateDate(new Timestamp(new Date().getTime()));
+        user.setOpenId(this.openid);
+        user.setUsername(this.getNick_name());
+        user.setCreateDate(Timestamp.valueOf(this.createTime));
         user.setSex(this.sex.equals("man") ? (byte) 1 : 0);
         user.setPhone(this.phone);
         user.setPicture(this.pictureUrl);
         user.setNickname(this.nick_name);
         user.setPassword("666666");
+        user.setRealNameAuth(this.realNameAuth);
+        user.setPictureUrl(this.pictureUrl);
         return user;
     }
 }

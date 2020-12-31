@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
- * @author 小懒虫
+ * @author Sam
  * @date 2018/12/02
  */
 @Data

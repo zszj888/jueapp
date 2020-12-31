@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Example;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -87,18 +86,31 @@ public class LoginController {
             log.info("Json read result:{}", read.toString());
             String openid;
             openid = read.get("openid").asText();
-            Optional<User> one = userRepository.findOne(Example.of(new User(openid)));
+            Optional<User> one = userRepository.findByOpenid(openid);
             User user = null;
             if (!one.isPresent()) {
                 User user1 = new User(openid);
                 user1.setSex("man");
                 user1.setBalance(BigDecimal.ZERO);
+                user1.setRealNameAuth(0);
                 user = userRepository.save(user1);
-                userService.save(user.toSysUser());
+
             }
             User finalUser = one.orElse(user);
+            SysUser newUser = finalUser.toSysUser();
+            SysUser sysUser = userService.findByOpenId(finalUser.getOpenid());
+            if (Objects.nonNull(sysUser)){
+                sysUser.setSex(newUser.getSex());
+                sysUser.setRealNameAuth(newUser.getRealNameAuth());
+                sysUser.setPassword(newUser.getPassword());
+                userService.save(sysUser);
+            }else {
+                userService.save(newUser);
+            }
             log.info("Return userId {} ", finalUser.getId());
             read.put("userId", finalUser.getId());
+            read.put("realNameAuth", finalUser.getRealNameAuth());
+            read.put("talentId", finalUser.getTalentId());
 
             SystemUtil.login(finalUser);
         }

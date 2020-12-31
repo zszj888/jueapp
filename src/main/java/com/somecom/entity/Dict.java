@@ -28,7 +28,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author 小懒虫
+ * @author Sam
  * @date 2018/8/14
  */
 @Data

@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  * 封装URL地址，自动添加应用上下文路径
  *
- * @author 小懒虫
+ * @author Sam
  * @date 2018/10/15
  */
 @Data

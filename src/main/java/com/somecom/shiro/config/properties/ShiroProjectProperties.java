@@ -7,7 +7,7 @@ package com.somecom.shiro.config.properties;//package com.dmrz.dm.shiro.config.p
 ///**
 // * 项目-shiro会话配置项
 // *
-// * @author 小懒虫
+// * @author Sam
 // * @date 2018/11/6
 // */
 //@Data

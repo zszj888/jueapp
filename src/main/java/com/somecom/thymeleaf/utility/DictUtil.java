@@ -2,18 +2,26 @@ package com.somecom.thymeleaf.utility;
 
 
 import com.somecom.entity.Dict;
+import com.somecom.entity.Role;
+import com.somecom.entity.SysUser;
+import com.somecom.enums.SystemDataStatusEnum;
+import com.somecom.repo.RoleRepository;
+import com.somecom.repository.SysUserRepository;
 import com.somecom.service.DictService;
 import com.somecom.utils.SpringContextUtil;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
+import org.springframework.data.domain.Example;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 字典提取工具对象
  *
- * @author 小懒虫
+ * @author Sam
  * @date 2018/8/14
  */
 public class DictUtil {
@@ -45,6 +53,15 @@ public class DictUtil {
                     }
                 }
                 dictCache.put(new Element(dict.getName(), value));
+            }else {
+                if ("BROKER_LIST".equalsIgnoreCase(label)) {
+                    SysUserRepository userRepository = SpringContextUtil.getBean(SysUserRepository.class);//BROKER_LIST
+                    SysUser ex = new SysUser();
+                    ex.setBroker(true);
+                    List<SysUser> all = userRepository.findAll(Example.of(ex));
+                    value = all.stream().collect(Collectors.toMap(k -> k.getId().toString(), SysUser::getNickname));
+                    dictCache.put(new Element(label, value));
+                }
             }
         }
         return value;

@@ -6,6 +6,7 @@ import com.somecom.enums.SystemDataStatusEnum;
 import com.somecom.repo.RoleRepository;
 import com.somecom.service.JueRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -17,9 +18,10 @@ import org.springframework.util.StringUtils;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * @author 小懒虫
+ * @author Sam
  * @date 2018/8/14
  */
 @Service
@@ -27,6 +29,16 @@ public class JueRoleServiceImpl implements JueRoleService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Override
+    public List<Role> findAll(Role exam) {
+        return roleRepository.findAll(Example.of(exam));
+    }
+
+    @Override
+    public void save(List<Role> roles) {
+        roleRepository.saveAll(roles);
+    }
 
     /**
      * 根据用户ID获取用户信息
@@ -53,6 +65,9 @@ public class JueRoleServiceImpl implements JueRoleService {
         // 使用Specification复杂查询
         Page<Role> all = roleRepository.findAll((Specification<Role>) (root, query, cb) -> {
             List<Predicate> preList = new ArrayList<>();
+            if (Objects.nonNull(role.getCreateById())){
+                preList.add(cb.equal(root.get("createById").as(Integer.class), role.getCreateById()));
+            }
             if (role.getId() != null) {
                 preList.add(cb.equal(root.get("id").as(Integer.class), role.getId()));
             }

@@ -4,13 +4,13 @@ import com.somecom.entity.SysUser;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 /**
- * @author 小懒虫
+ * @author Sam
  * @date 2018/8/14
  */
 public interface SysUserRepository extends BaseRepository<SysUser, Long>, JpaSpecificationExecutor<SysUser> {
     SysUser findByPhone(String phone);
 
-
+    SysUser findByOpenId(String openId);
     /**
      * 根据用户名查询用户数据
      *

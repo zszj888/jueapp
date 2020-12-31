@@ -12,7 +12,7 @@ import java.util.TreeMap;
 /**
  * 通用方法工具类
  *
- * @author 小懒虫
+ * @author Sam
  * @date 2018/10/15
  */
 public class ToolUtil {

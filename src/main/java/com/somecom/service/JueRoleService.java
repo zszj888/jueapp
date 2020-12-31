@@ -8,11 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * @author 小懒虫
+ * @author Sam
  * @date 2018/8/14
  */
 public interface JueRoleService {
+    void save(List<Role> roles);
 
+    List<Role> findAll(Role example);
     /**
      * 获取分页列表数据
      *

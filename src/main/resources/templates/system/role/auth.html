@@ -21,9 +21,9 @@
 </head>
 <body>
 <div class="layui-form timo-compile">
-    <ul class="ztree" id="authTree" th:attr="data-url=@{/admin/system/sysRole/authList(ids=${id})}"></ul>
+    <ul class="ztree" id="authTree" th:attr="data-url=@{/admin/system/role/authList(ids=${id})}"></ul>
     <div class="layui-form-item timo-finally">
-        <button class="layui-btn" id="submit" th:attr="data-url=@{/admin/system/sysRole/auth}, data-id=${id}"><i
+        <button class="layui-btn" id="submit" th:attr="data-url=@{/admin/system/role/auth}, data-id=${id}"><i
                 class="fa fa-check-circle"></i> 保存
         </button>
         <button class="layui-btn btn-secondary close-popup"><i class="fa fa-times-circle"></i> 关闭</button>

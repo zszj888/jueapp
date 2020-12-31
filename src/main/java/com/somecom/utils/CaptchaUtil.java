@@ -7,7 +7,7 @@ import java.util.Random;
 /**
  * 验证码生成工具
  *
- * @author 小懒虫
+ * @author Sam
  * @date 2018/11/7
  */
 public class CaptchaUtil {

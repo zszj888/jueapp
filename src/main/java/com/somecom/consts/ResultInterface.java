@@ -3,7 +3,7 @@ package com.somecom.consts;
 /**
  * 结果枚举接口
  *
- * @author 小懒虫
+ * @author Sam
  * @date 2019/2/13
  */
 public interface ResultInterface {

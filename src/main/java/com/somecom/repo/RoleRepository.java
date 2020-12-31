@@ -11,5 +11,4 @@ import java.util.List;
 // CRUD refers Create, Read, Update, Delete
 
 public interface RoleRepository extends JpaRepository<Role, Integer>, JpaSpecificationExecutor<Role> {
-    List<Role> findByNameContainsAndSkillContainsOrderByIdDesc(String name, String skill);
 }

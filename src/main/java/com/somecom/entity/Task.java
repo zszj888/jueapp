@@ -21,13 +21,13 @@ import java.time.LocalDateTime;
 public class Task extends BaseEntity {
 
     @Column(name = "task_name")
-    private String name = "";
+    private String name;
 
     @Column(name = "img")
     private String img;
 
     @Column(name = "task_desc")
-    private String desc = "";
+    private String desc;
 
     @Column(name = "remrks")
     private String remrks;
@@ -38,7 +38,7 @@ public class Task extends BaseEntity {
     private Byte recommend;
 
     @Column(name = "skill")
-    private String skill = "";
+    private String skill;
 
     @Transient
     private Boolean collection;
@@ -64,6 +64,8 @@ public class Task extends BaseEntity {
     private Integer acceptedById;
     @Column(name = "apply_persons")
     private String applyPersons;
+    @Transient
+    private boolean validate;
 
     public static Task ofNameAndUserId(String name, Integer createBy) {
         Task task = new Task();

@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 /**
- * @author 小懒虫
+ * @author Sam
  * @date 2018/10/19
  */
 public interface ActionLogRepository extends JpaRepository<ActionLog, Long> {

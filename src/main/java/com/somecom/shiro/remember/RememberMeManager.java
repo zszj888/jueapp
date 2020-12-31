@@ -10,7 +10,7 @@
 ///**
 // * 记住我管理器
 // *
-// * @author 小懒虫
+// * @author Sam
 // * @date 2019/10/28
 // */
 //public class RememberMeManager {

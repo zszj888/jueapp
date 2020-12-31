@@ -1,5 +1,8 @@
 package com.somecom.entity;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.somecom.model.LocalDateTimeConverter;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,11 +25,15 @@ public class BaseEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     @Column(name = "id", updatable = false, nullable = false)
+    @ExcelProperty(index = 0, value = "编号")
     private Integer id;
 
     @Column(name = "last_update_time")
+//    @ExcelProperty(converter = LocalDateTimeConverter.class)
+    @ExcelIgnore
     private LocalDateTime lastUpdateTime;
 
+    @ExcelIgnore
     @Column(name = "version")
     private Integer version;
 

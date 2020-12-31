@@ -8,7 +8,7 @@
 //import java.util.List;
 //
 ///**
-// * @author 小懒虫
+// * @author Sam
 // * @date 2018/12/02
 // */
 //public interface DeptRepository extends BaseRepository<Dept, Long> {

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author 小懒虫
+ * @author Sam
  * @date 2018/12/7
  */
 public class QuerySpec {

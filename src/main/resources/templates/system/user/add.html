@@ -34,25 +34,25 @@
                 <input class="layui-input" name="confirm" placeholder="再一次输入密码" type="password">
             </div>
         </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">地址</label>
-            <div class="layui-input-inline">
-                <input class="layui-input select-tree"
-                       name="address" placeholder="请输入详细地址" th:value="${user?.address}" type="text">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">电话号码</label>
-            <div class="layui-input-inline">
-                <input class="layui-input" name="phone" placeholder="请输入电话号码" th:value="${user?.phone}" type="text">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">邮箱</label>
-            <div class="layui-input-inline">
-                <input class="layui-input" name="email" placeholder="请输入邮箱" th:value="${user?.email}" type="text">
-            </div>
-        </div>
+<!--        <div class="layui-form-item">-->
+<!--            <label class="layui-form-label">地址</label>-->
+<!--            <div class="layui-input-inline">-->
+<!--                <input class="layui-input select-tree"-->
+<!--                       name="address" placeholder="请输入详细地址" th:value="${user?.address}" type="text">-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="layui-form-item">-->
+<!--            <label class="layui-form-label">电话号码</label>-->
+<!--            <div class="layui-input-inline">-->
+<!--                <input class="layui-input" name="phone" placeholder="请输入电话号码" th:value="${user?.phone}" type="text">-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="layui-form-item">-->
+<!--            <label class="layui-form-label">邮箱</label>-->
+<!--            <div class="layui-input-inline">-->
+<!--                <input class="layui-input" name="email" placeholder="请输入邮箱" th:value="${user?.email}" type="text">-->
+<!--            </div>-->
+<!--        </div>-->
 
         <div class="layui-form-item">
             <label class="layui-form-label">选择性别</label>
@@ -67,6 +67,22 @@
                 </div>
             </div>
         </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">经纪人账号</label>
+            <div class="layui-input-inline">
+                <input checked name="broker" title="是" type="radio" value="1">
+                <div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i>
+                    <div>是</div>
+                </div>
+                <input name="broker" th:checked="${user != null?!user.broker:false}" title="否" type="radio" value="0">
+                <div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i>
+                    <div>否</div>
+                </div>
+            </div>
+        </div>
+
+
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">备注</label>
             <div class="layui-input-block">

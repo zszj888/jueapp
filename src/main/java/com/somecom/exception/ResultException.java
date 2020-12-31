@@ -7,7 +7,7 @@ import lombok.Getter;
 /**
  * 自定义异常对象
  *
- * @author 小懒虫
+ * @author Sam
  * @date 2018/8/14
  */
 @Getter

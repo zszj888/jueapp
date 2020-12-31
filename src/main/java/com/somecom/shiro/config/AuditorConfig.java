@@ -13,7 +13,7 @@
 ///**
 // * 审核员自动赋值配置
 // *
-// * @author 小懒虫
+// * @author Sam
 // * @date 2018/8/14
 // */
 //@Configuration

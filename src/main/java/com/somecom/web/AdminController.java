@@ -32,7 +32,7 @@ import java.net.MalformedURLException;
 import java.util.HashMap;
 
 /**
- * @author 小懒虫
+ * @author Sam
  * @date 2018/8/14
  */
 @Controller
@@ -146,7 +146,7 @@ public class AdminController implements ErrorController {
     @GetMapping("/logout")
     public String logout() {
         SystemUtil.adminLogout();
-        return "redirect:/login";
+        return "redirect:login";
     }
 
     /**

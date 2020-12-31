@@ -7,7 +7,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * 加密工具
  *
- * @author 小懒虫
+ * @author Sam
  * @date 2019/4/25
  */
 public class EncryptUtil {

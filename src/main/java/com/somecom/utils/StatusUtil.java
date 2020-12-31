@@ -8,7 +8,7 @@ import com.somecom.exception.ResultException;
 /**
  * 数据状态工具
  *
- * @author 小懒虫
+ * @author Sam
  * @date 2019/2/19
  */
 public class StatusUtil {

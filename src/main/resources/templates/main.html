@@ -17,8 +17,8 @@
         </a>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
-                <a href="#">
-                    <i class="fa fa-bell-o fa-lg"></i>
+                <a th:href="@{/ws/kefu.html}" target="_blank">
+                    <i class="fa fa-bell-o fa-lg"></i>在线客服服务
                 </a>
             </li>
             <li class="layui-nav-item">
@@ -36,7 +36,7 @@
                         <div><a class="open-popup" data-size="456,296" data-title="修改密码"
                                 th:attr="data-url=@{/editPwd}"><!--
               --><i class="fa fa-lock" style="font-size:17px;width:12px;"></i>修改密码</a></div>
-                        <div><a th:href="@{/user/loginOut}"><i class="fa fa-power-off"></i>退出登录</a></div>
+                        <div><a th:href="@{/admin/logout}"><i class="fa fa-power-off"></i>退出登录</a></div>
                     </div>
                 </div>
             </li>

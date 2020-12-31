@@ -6,7 +6,7 @@ import lombok.Getter;
 /**
  * 数据状态枚举-用于逻辑删除控制
  *
- * @author 小懒虫
+ * @author Sam
  * @date 2018/8/14
  */
 @Getter

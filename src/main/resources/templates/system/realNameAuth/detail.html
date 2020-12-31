@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+>
+<head th:replace="common/template :: header(~{::title},~{::link},~{::style})">
+</head>
+<body>
+<div class="timo-detail-page">
+    <div class="timo-detail-title">基本信息</div>
+    <table class="layui-table timo-detail-table">
+        <tbody>
+        <tr>
+            <th width='100px'>身份证正面</th>
+            <td>
+                <img th:src="${user.pictureUrl eq null?'':user.pictureUrl.split(',')[0]}" alt="暂无"
+                     onclick="onReview('身份证正面',this)"/>
+            </td>
+            <th width='100px'>身份证反面</th>
+            <td>
+                <img th:src="${user.pictureUrl eq null?'':user.pictureUrl.split(',')[1]}" alt="暂无"
+                     onclick="onReview('身份证反面',this)"/>
+            </td>
+            <th width='100px'>手持身份证</th>
+            <td>
+                <img th:src="${user.pictureUrl eq null?'':user.pictureUrl.split(',')[2]}" alt="暂无"
+                     onclick="onReview('手持身份证',this)"/>
+            </td>
+
+        </tr>
+
+
+        <tr>
+            <th width='100px'>用户编号</th>
+            <td th:text="${user.id}"></td>
+            <th width='100px'>用户账号</th>
+            <td th:text="${user.username}"></td>
+        </tr>
+        <tr>
+            <th>用户昵称</th>
+            <td th:text="${user.nickname}"></td>
+            <th>用户性别</th>
+            <td th:text="${#dicts.keyValue('USER_SEX', user.sex)}"></td>
+        </tr>
+        <tr>
+            <th>电话号码</th>
+            <td th:text="${user.phone}"></td>
+            <th>邮箱</th>
+            <td th:text="${user.email}"></td>
+        </tr>
+        <tr>
+            <th>创建时间</th>
+            <td th:text="${#dates.format(user.createDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <th>最后修改</th>
+            <td th:text="${#dates.format(user.updateDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+        </tr>
+        <tr>
+            <th>备注</th>
+            <td colspan="4" th:text="${user.remark}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <div th:if="${user.realNameAuth eq 2}">
+        <input id="userId" th:value="${user.id}" hidden/>
+        <button onclick="pass()" id="approvePass" class="layui-btn approvePass">审核通过</button>
+        <button onclick="refuse()" id="approveReject" class="layui-btn approveReject">驳回申请</button>
+    </div>
+
+</div>
+<script th:replace="common/template :: script"></script>
+<script>
+    function onReview(title, img) {
+        var url = img.src;
+        if (url===''){
+            return;
+        }
+        var imgWin = window.open('', 'img', 'width=50,height=50,scrollbars=yes,resizable=yes,location=no,status=no')//打开一个空白窗口，并初始化大小
+        imgWin.focus()//使窗口聚焦，成为当前窗口
+        var HTML = "<html>\r\n<head>\r\n<title>" + title + "</title>\r\n</head>\r\n<body leftmargin=\"0\" topmargin=\"0\">\r\n" +
+            "<img src=\"" + url + "\" onload=\"window.resizeTo(this.width+30,this.height+35);" +
+            "if(screen.width>this.width && screen.height>this.height) {window.moveTo((screen.width-this.width)/2,(screen.height-this.height)/2);} " +
+            "else {window.moveTo(-4,-4);window.resizeTo(screen.availWidth+9,screen.availHeight+9);}\">\r\n</body>\r\n</html>"
+        //这里是关键代码，在图片加载完后调用resizeTo()和moveTo()方法调整窗口大小和位置
+        var doc = imgWin.document
+        doc.open("text/html", "replace") //指定文档的多用途网际邮件扩充协议
+        doc.write(HTML)//向空白窗口写入代码
+        doc.close()//关闭输入流，并强制发送数据显示。
+    }
+ function pass(){
+
+    }
+    function refuse() {
+
+    }
+</script>
+</body>
+</html>

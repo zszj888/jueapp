@@ -4,7 +4,7 @@ package com.somecom.repository;
 import com.somecom.entity.Dict;
 
 /**
- * @author 小懒虫
+ * @author Sam
  * @date 2018/8/14
  */
 public interface DictRepository extends BaseRepository<Dict, Long> {

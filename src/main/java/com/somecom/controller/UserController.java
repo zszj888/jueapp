@@ -2,6 +2,7 @@ package com.somecom.controller;
 
 import com.somecom.entity.Role;
 import com.somecom.entity.RoleApply;
+import com.somecom.entity.SysUser;
 import com.somecom.entity.Task;
 import com.somecom.entity.TaskApply;
 import com.somecom.entity.Transaction;
@@ -30,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.Objects;
@@ -69,8 +69,8 @@ public class UserController {
                     transaction.setTransType(TransactionType.OUTCOME.getCode());
                     transactionRepository.saveAndFlush(transaction);
                     //todo 企业付款到微信余额
-                }else {
-                    throw  new IllegalArgumentException("余额不足");
+                } else {
+                    throw new IllegalArgumentException("余额不足");
                 }
             });
             byId.orElseThrow(() -> new IllegalArgumentException("用户未找到，id" + body.getUserId()));
@@ -110,15 +110,24 @@ public class UserController {
     }
 
     @ApiOperation(value = "新增保存用户信息", notes = "注意确保字段的合法性")
-    @PostMapping("/addUserInfo")
-    public ResultVo addUser(@RequestBody User user) {
+    @PostMapping("/updateUserMyInfo")
+    public ResultVo updateUserMyInfo(@RequestBody User user) {
         if (Objects.nonNull(user.getId())) {
             Optional<User> byId = userRepository.findById(user.getId());
             byId.ifPresent(b -> {
                 BeanUtils.copyProperties(user, b);
-                b.setBalance(BigDecimal.ZERO);
-                userRepository.save(b);
-                userService.save(b.toSysUser());
+                b.setNick_name(user.getNick_name());
+                b.setSex(user.getSex());
+                b.setBirthda_day(user.getBirthda_day());
+                b.setHeight(user.getHeight());
+                b.setWeight(user.getWeight());
+                b.setTalents(user.getTalents());
+                userRepository.saveAndFlush(b);
+                SysUser sysUser = userService.findByOpenId(b.getOpenid());
+                SysUser newUser = b.toSysUser();
+                sysUser.setNickname(newUser.getNickname());
+                sysUser.setSex(newUser.getSex());
+                userService.save(sysUser);
             });
             return ResultVo.ok();
         }
@@ -134,13 +143,23 @@ public class UserController {
     }
 
     @ApiOperation(value = "更新用户", notes = "注意确保字段的合法性")
-    @PostMapping("updateUser")
-    public ResultVo updateUser(@RequestBody @Valid User user) {
+    @PostMapping("updateRealNamePicture")
+    @Transactional
+    public ResultVo updateUserPicture(@RequestBody @Valid User user) {
         Optional<User> one = userRepository.findById(user.getId());
         one.orElseThrow(IllegalAccessError::new);
-        one.ifPresent(o -> BeanUtils.copyProperties(user, o));
-        userService.save(one.get().toSysUser());
-        return ResultVo.ok(userRepository.save(one.get()));
+        one.ifPresent(o ->
+                {
+                    o.setPictureUrl(user.getPictureUrl());
+                    o.setRealNameAuth(2);
+                    SysUser sysUser = userService.findByOpenId(o.getOpenid());
+                    sysUser.setPictureUrl(o.getPictureUrl());
+                    sysUser.setRealNameAuth(2);
+                    userService.save(sysUser);
+                    userRepository.saveAndFlush(o);
+                }
+        );
+        return ResultVo.ok();
     }
 
     @ApiOperation(value = "用户的任务", notes = "用户的所有任务列表")
@@ -207,7 +226,7 @@ public class UserController {
         //已申请
         if (type == 4) {
             return ResultVo.ok(roleApplyRepository.findAll(Example.of(RoleApply.example(userId))).stream()
-                    .map(RoleApply::getRole).peek(role -> role.setRemrks("申请")).sorted(Comparator.comparing(Role::getId).reversed()).collect(Collectors.toList()));
+                    .map(RoleApply::getRole).peek(role -> role.setRemark("申请")).sorted(Comparator.comparing(Role::getId).reversed()).collect(Collectors.toList()));
         }
         return ResultVo.ok(user.get().getRoles());
     }

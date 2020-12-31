@@ -6,7 +6,7 @@ import com.somecom.vo.SysResultVo;
 /**
  * 响应数据(结果)最外层对象工具
  *
- * @author 小懒虫
+ * @author Sam
  * @date 2018/10/15
  */
 public class ResultVoUtil {

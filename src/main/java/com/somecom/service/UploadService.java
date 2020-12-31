@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 /**
- * @author 小懒虫
+ * @author Sam
  * @date 2018/11/02
  */
 public interface UploadService {

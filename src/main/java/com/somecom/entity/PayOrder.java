@@ -17,6 +17,9 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "t_pay_order")
 public class PayOrder extends BaseEntity {
+    private Integer owner;
+    @Column(name = "origin_fee")
+    private BigDecimal originFee;
     @Column(name = "create_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;

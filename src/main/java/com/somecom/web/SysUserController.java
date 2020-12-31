@@ -2,11 +2,14 @@ package com.somecom.web;
 
 import com.somecom.config.properties.UploadProjectProperties;
 import com.somecom.consts.AdminConst;
+import com.somecom.entity.PayOrder;
 import com.somecom.entity.SysRole;
 import com.somecom.entity.SysUser;
 import com.somecom.enums.ResultEnum;
 import com.somecom.enums.SystemDataStatusEnum;
 import com.somecom.exception.ResultException;
+import com.somecom.repo.PayOrderRepository;
+import com.somecom.service.SysRoleService;
 import com.somecom.service.UserService;
 import com.somecom.shiro.ShiroUtil;
 import com.somecom.utils.EncryptUtil;
@@ -20,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -36,11 +40,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
- * @author 小懒虫
+ * @author Sam
  * @date 2018/8/14
  */
 @Controller
@@ -49,6 +60,19 @@ public class SysUserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private PayOrderRepository payOrderRepository;
+
+    public static void main(String[] args) {
+        LocalDate firstDayThisMonth = LocalDate.now().withDayOfMonth(1);
+        LocalDateTime today_start = LocalDateTime.of(firstDayThisMonth, LocalTime.MIN);
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        System.out.println(df.format(today_start.minus(1, ChronoUnit.SECONDS)));
+
+        LocalDate lastMonthDate = LocalDate.now().withDayOfMonth(1).minus(1, ChronoUnit.MONTHS);
+        LocalDateTime lastMonthDateTime = LocalDateTime.of(lastMonthDate, LocalTime.MIN);
+        System.out.println(df.format(lastMonthDateTime));
+    }
 
     /**
      * 列表页面
@@ -59,6 +83,21 @@ public class SysUserController {
         // 获取用户列表
         Page<SysUser> list = userService.getPageList(user);
 
+        // 计算当月和上月成交额
+        list.forEach(u -> {
+            LocalDate firstDayThisMonth = LocalDate.now().withDayOfMonth(1);
+            LocalDateTime today_start = LocalDateTime.of(firstDayThisMonth, LocalTime.MIN);
+            //当月
+            List<PayOrder> currentMonth = payOrderRepository.findByOwnerAndStatusEqualsAndCreateTimeBetween(u.getId().intValue(),
+                    (byte) 1, today_start, LocalDateTime.now());
+            u.setCurrentMonthMoney(currentMonth.stream().map(PayOrder::getOriginFee).reduce(BigDecimal.ZERO, BigDecimal::add));
+            //上月
+            LocalDate lastMonthDate = LocalDate.now().withDayOfMonth(1).minus(1, ChronoUnit.MONTHS);
+            LocalDateTime lastMonthDateTime = LocalDateTime.of(lastMonthDate, LocalTime.MIN);
+            List<PayOrder> lastMonth = payOrderRepository.findByOwnerAndStatusEqualsAndCreateTimeBetween(u.getId().intValue(),
+                    (byte) 1, lastMonthDateTime, today_start.minus(1, ChronoUnit.SECONDS));
+            u.setLastMonthMoney(lastMonth.stream().map(PayOrder::getOriginFee).reduce(BigDecimal.ZERO, BigDecimal::add));
+        });
         // 封装数据
         model.addAttribute("list", list.getContent());
         model.addAttribute("page", list);
@@ -131,6 +170,7 @@ public class SysUserController {
         }
 
         // 保存数据
+        user.setRealNameAuth(0);
         userService.save(user);
         return ResultVoUtil.SAVE_SUCCESS;
     }
@@ -190,21 +230,23 @@ public class SysUserController {
         userService.save(users);
         return ResultVoUtil.success("修改成功");
     }
+    @Autowired
+    private SysRoleService sysRoleService;
 
     /**
      * 跳转到角色分配页面
      */
     @GetMapping("/role")
     public String toRole(@RequestParam(value = "ids") SysUser user, Model model) {
-        /*// 获取指定用户角色列表
+        // 获取指定用户角色列表
         Set<SysRole> authRoles = user.getSysRoles();
         // 获取全部角色列表
         Sort sort = new Sort(Sort.Direction.ASC, "createDate");
-        List<SysRole> list = roleService.getListBySortOk(sort);*/
+        List<SysRole> list = sysRoleService.getListBySortOk(sort);
 
         model.addAttribute("id", user.getId());
-        model.addAttribute("list", null);
-        model.addAttribute("authRoles", null);
+        model.addAttribute("list", list);
+        model.addAttribute("authRoles", authRoles);
         return "system/user/role";
     }
 
@@ -216,7 +258,7 @@ public class SysUserController {
     @PostMapping("/role")
     @ResponseBody
     public SysResultVo auth(
-            @RequestParam(value = "id", required = true) SysUser user,
+            @RequestParam(value = "id") SysUser user,
             @RequestParam(value = "roleId", required = false) HashSet<SysRole> sysRoles) {
 
         // 不允许操作超级管理员数据

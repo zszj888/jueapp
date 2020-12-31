@@ -6,7 +6,7 @@ import com.somecom.action.model.SystemMethod;
 import com.somecom.entity.ActionLog;
 
 /**
- * @author 小懒虫
+ * @author Sam
  * @date 2018/10/19
  */
 public class SystemAction extends BaseActionMap {

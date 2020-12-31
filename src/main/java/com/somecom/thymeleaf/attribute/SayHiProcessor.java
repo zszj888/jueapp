@@ -6,7 +6,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 /**
  * 根据字典标识生成下拉列表
  *
- * @author 小懒虫
+ * @author Sam
  * @date 2018/8/14
  */
 public class SayHiProcessor extends AbstractProcessor {
