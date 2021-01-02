@@ -102,8 +102,8 @@
                 <td th:text="${#dates.format(item.createDate, 'yyyy-MM-dd HH:mm:ss')}">创建时间</td>
                 <td th:text="${#dicts.dataStatus(item.status)}">状态</td>
                 <td>
-                    <a class="open-popup" data-size="600,570" data-title="编辑用户"
-                       href="#" th:attr="data-url=@{'/admin/system/realNameAuth/edit/'+${item.id}}">编辑</a>
+<!--                    <a class="open-popup" data-size="600,570" data-title="编辑用户"-->
+<!--                       href="#" th:attr="data-url=@{'/admin/system/realNameAuth/edit/'+${item.id}}">编辑</a>-->
                     <a class="open-popup" data-size="800,600"
                        data-title="详细信息"
                        href="#" th:attr="data-url=@{'/admin/system/realNameAuth/detail/'+${item.id}}">详细</a>

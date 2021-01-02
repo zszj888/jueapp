@@ -126,7 +126,7 @@ public class JueRoleController {
         optionalSysUser.orElseThrow(() -> new IllegalArgumentException("请登录"));
         EasyExcel.read(file.getInputStream(), Role.class,
                 new UploadDataListener(jueRoleService, optionalSysUser.get().getId().intValue())).sheet().doRead();
-        return ResultVoUtil.success();
+        return ResultVoUtil.success("上传成功");
     }
 
     /**

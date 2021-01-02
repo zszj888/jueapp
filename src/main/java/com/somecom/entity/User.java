@@ -255,7 +255,7 @@ public class User extends BaseEntity {
     public SysUser toSysUser() {
         SysUser user = new SysUser();
         user.setOpenId(this.openid);
-        user.setUsername(this.getNick_name());
+        user.setUsername(this.nick_name);
         user.setCreateDate(Timestamp.valueOf(this.createTime));
         user.setSex(this.sex.equals("man") ? (byte) 1 : 0);
         user.setPhone(this.phone);
@@ -264,6 +264,7 @@ public class User extends BaseEntity {
         user.setPassword("666666");
         user.setRealNameAuth(this.realNameAuth);
         user.setPictureUrl(this.pictureUrl);
+        user.setBroker(this.broker==1);
         return user;
     }
 }

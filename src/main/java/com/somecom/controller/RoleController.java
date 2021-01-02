@@ -214,14 +214,7 @@ public class RoleController {
     @ApiOperation(value = "查询角色列表", notes = "默认查询全部，无分页")
     @GetMapping(path = "/list/{userId}/{index}")
     public ResultVo getRoleList(Role role, @PathVariable("userId") Integer userId, @PathVariable("index") Integer index) {
-//        List<Role> roles;
-//        if (!StringUtils.hasText(role.getName()) && !StringUtils.hasText(role.getSkill())) {
-//            roles = roleRepository.findAll(Sort.by("id").descending());
-//        } else {
-//            roles = roleRepository.findByNameContainsAndSkillContainsOrderByIdDesc(role.getName(), role.getSkill());
-//        }
-        ////
-// 创建分页对象
+        // 创建分页对象
         PageRequest page = PageSort.of(index);
 
         // 使用Specification复杂查询

@@ -30,12 +30,12 @@ import java.time.LocalDateTime;
 public class Role extends BaseEntity {
 
     @Column(name = "role_name")
-    @ExcelProperty(value = "姓名",index = 1)
+    @ExcelProperty(value = "姓名",index = 0)
     private String name;
 
     //    @NotBlank(message = "图片文件名必传，例:c6e92c16-ae3c-49d1-9bfb-90aaf2ad4f5c.jpg")
     @Column(name = "img")
-    @ExcelProperty(value = "头像",index = 2)
+    @ExcelIgnore
     private String img;
 
     //    @NotBlank(message = "文件uri路径，例:c6e92c16-ae3c-49d1-9bfb-90aaf2ad4f5c.jpg")
@@ -44,32 +44,32 @@ public class Role extends BaseEntity {
     private String imgUrl;
 
     @Column(name = "role_desc")
-    @ExcelIgnore
+    @ExcelProperty(value = "个人特色",index = 5)
     private String desc;
 
     @Column(name = "remrks")
-    @ExcelIgnore
+    @ExcelProperty(value = "标签",index = 7)
     private String remark;
 
     @Column(name = "age")
-    @ExcelProperty(value = "年龄",index = 3)
+    @ExcelProperty(value = "年龄",index = 2)
     private Integer age;
 
     @Column(name = "sex")
-    @ExcelProperty(value = "性别",index = 4)
+    @ExcelProperty(value = "性别",index = 1)
     private String sex;
     @Column(name = "height")
-    @ExcelProperty(value = "身高",index = 5)
+    @ExcelProperty(value = "身高",index = 3)
     private Integer height;
-    @ExcelProperty(value = "体重",index = 6)
+    @ExcelProperty(value = "体重",index = 4)
     private Integer weight;
 
-    @ExcelProperty(value = "才艺",index = 7)
+    @ExcelIgnore
     @Column(name = "skill")
     private String skill;
     @ExcelIgnore
     private String showInfo;
-    @ExcelProperty(value = "演出费",index = 8)
+    @ExcelProperty(value = "演出费",index = 9)
     private BigDecimal fee;
     //是否已收藏
     @Transient
@@ -81,7 +81,8 @@ public class Role extends BaseEntity {
 
     @Column(name = "create_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @ExcelProperty(value = "创建时间",converter = LocalDateTimeConverter.class)
+//    @ExcelProperty(value = "创建时间",converter = LocalDateTimeConverter.class)
+    @ExcelIgnore
     private LocalDateTime createTime;
     @ExcelIgnore
     @Column(name = "open_id")
@@ -89,7 +90,7 @@ public class Role extends BaseEntity {
     @ExcelIgnore
     @Column(name = "video_url")
     private String video_url;
-    @ExcelIgnore
+    @ExcelProperty(value = "分类",index = 6)
     @Column(name = "role_type")
     private String type;
     @ExcelIgnore
@@ -98,7 +99,7 @@ public class Role extends BaseEntity {
     @ExcelIgnore
     @Column(name = "accepted_by_id")
     private Integer acceptedById;
-    @ExcelProperty(value = "状态",index = 10)
+    @ExcelIgnore
     private String status;
 
     @Column(name = "birthda_day")
@@ -108,7 +109,7 @@ public class Role extends BaseEntity {
     @ExcelIgnore
     private LocalDate birthda_day;
 
-    @ExcelProperty(value = "服务器范围",index = 9)
+    @ExcelProperty(value = "服务范围",index = 8)
     private String position;
 
     public static Role of(Integer roleId) {

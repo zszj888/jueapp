@@ -78,7 +78,7 @@ public class LoginController {
     @GetMapping(path = "/finishLogin")
     @Transactional
     @ApiImplicitParam(name = "code", required = true, dataType = "string", paramType = "query")
-    public String login(String code) {
+    public String login(String code,String nickName) {
 
         ObjectNode read = null;
         if (StringUtils.hasText(code)) {
@@ -93,13 +93,21 @@ public class LoginController {
                 user1.setSex("man");
                 user1.setBalance(BigDecimal.ZERO);
                 user1.setRealNameAuth(0);
+                user1.setBroker((byte)0);
                 user = userRepository.save(user1);
 
+            }
+            if (one.isPresent() && StringUtils.hasText(nickName)){
+                one.get().setNick_name(nickName);
+                userRepository.save(one.get());
             }
             User finalUser = one.orElse(user);
             SysUser newUser = finalUser.toSysUser();
             SysUser sysUser = userService.findByOpenId(finalUser.getOpenid());
             if (Objects.nonNull(sysUser)){
+                if (StringUtils.hasText(nickName)){
+                    sysUser.setNickname(nickName);
+                }
                 sysUser.setSex(newUser.getSex());
                 sysUser.setRealNameAuth(newUser.getRealNameAuth());
                 sysUser.setPassword(newUser.getPassword());

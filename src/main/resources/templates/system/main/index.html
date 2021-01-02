@@ -146,73 +146,94 @@
     </div>
 </div>
 <script th:replace="common/template :: script"></script>
-<script src="http://cdn.staticfile.org/jquery/2.1.1-rc2/jquery.min.js"></script>
-<script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+<script th:src="@{/js/plugins/jquery-2.2.4.js}"></script>
+<script th:src="@{/js/lay-module/echarts/echarts.js}"></script>
 <script type="text/javascript">
-    var myChart;
-    var test = 10
-    // 路径配置
-    require.config({
-        paths: {
-            echarts: 'http://echarts.baidu.com/build/dist'
-        }
-    });
-    // 使用
-    require(
-        [
-            'echarts',
-            'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
-        ],
-        function (ec) {
-            // 基于准备好的dom，初始化echarts图表
-            myChart = ec.init(document.getElementById('divProgress'));
-            var option = {
-                tooltip: {
-                    show: true
-                },
-                animation: true,
-                legend: {
-                    data: ['订单量']
-                },
-                xAxis: [
-                    {
-                        type: 'category',
-                        data: ["广州", "北京", "上海", "深圳", "南京", "重庆"]
-                    }
-                ],
-                yAxis: [
-                    {
-                        type: 'value'
-                    }
-                ],
-                series: [
-                    {
-                        "name": "销量",
-                        "type": "bar",
-                        "data": [90, 67, 63, 57, 56, 54]
-                    }
-                ]
-            };
-            // 为echarts对象加载数据
-            myChart.setOption(option);
-        }
-    );
+    // var myChart;
+    // var test = 10
+    // // 路径配置
+    // var ecConfig = echarts.config;
+    // // 使用
+    // require(
+    //     [
+    //         'echarts',
+    //         'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+    //     ],
+    //     function (ec) {
+    //         // 基于准备好的dom，初始化echarts图表
+    //         myChart = ec.init(document.getElementById('divProgress'));
+    //         var option = {
+    //             tooltip: {
+    //                 show: true
+    //             },
+    //             animation: true,
+    //             legend: {
+    //                 data: ['订单量']
+    //             },
+    //             xAxis: [
+    //                 {
+    //                     type: 'category',
+    //                     data: ["广州", "北京", "上海", "深圳", "南京", "重庆"]
+    //                 }
+    //             ],
+    //             yAxis: [
+    //                 {
+    //                     type: 'value'
+    //                 }
+    //             ],
+    //             series: [
+    //                 {
+    //                     "name": "销量",
+    //                     "type": "bar",
+    //                     "data": [90, 67, 63, 57, 56, 54]
+    //                 }
+    //             ]
+    //         };
+    //         // 为echarts对象加载数据
+    //         myChart.setOption(option);
+    //     }
+    // );
+    //
+    // //这里用setTimeout代替ajax请求进行演示
+    //
+    // var data = [test, 5, 10, 40, 20, 10];
+    // refreshData(data);
+    //
+    // function refreshData(data) {
+    //     if (!myChart) {
+    //         return;
+    //     }
+    //
+    //     //更新数据
+    //     var option = myChart.getOption();
+    //     option.series[0].data = data;
+    //     myChart.setOption(option);
+    // }
+    // based on prepared DOM, initialize echarts instance
+    var myChart = echarts.init(document.getElementById('divProgress'));
 
-    //这里用setTimeout代替ajax请求进行演示
+    // specify chart configuration item and data
+    var option = {
+        title: {
+            text: ''
+        },
+        tooltip: {},
+        legend: {
+            data:['']
+        },
+        xAxis: {
+            data: ["一月","二月","三月","四月","五月","六月"]
+        },
+        yAxis: {},
+        series: [{
+            name: '订单量',
+            type: 'bar',
+            data: [5, 20, 36, 44, 50, 90]
+        }]
+    };
 
-    var data = [test, 5, 10, 40, 20, 10];
-    refreshData(data);
-
-    function refreshData(data) {
-        if (!myChart) {
-            return;
-        }
-
-        //更新数据
-        var option = myChart.getOption();
-        option.series[0].data = data;
-        myChart.setOption(option);
-    }
+    // use configuration item and data specified to show chart
+    myChart.setOption(option);
 </script>
 </body>
 </html>

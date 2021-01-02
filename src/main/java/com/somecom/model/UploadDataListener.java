@@ -4,11 +4,12 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.fastjson.JSON;
 import com.somecom.entity.Role;
+import com.somecom.enums.SystemDataStatusEnum;
 import com.somecom.service.JueRoleService;
 import com.somecom.service.impl.JueRoleServiceImpl;
-import com.somecom.util.SystemUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
 // 有个很重要的点 DemoDataListener 不能被spring管理，要每次读取excel都要new,然后里面用到spring可以构造方法传进去
 public class UploadDataListener extends AnalysisEventListener<Role> {
     private static final Logger LOGGER =
-        LoggerFactory.getLogger(UploadDataListener.class);
+            LoggerFactory.getLogger(UploadDataListener.class);
     /**
      * 每隔5条存储数据库，实际使用中可以3000条，然后清理list ，方便内存回收
      */
@@ -33,7 +34,7 @@ public class UploadDataListener extends AnalysisEventListener<Role> {
     private JueRoleService jueRoleService;
     private Integer currentUserId;
 
-    public UploadDataListener(JueRoleService jueRoleService,Integer currentUserId) {
+    public UploadDataListener(JueRoleService jueRoleService, Integer currentUserId) {
         // 这里是demo，所以随便new一个。实际使用如果到了spring,请使用下面的有参构造函数
         this.currentUserId = currentUserId;
         this.jueRoleService = jueRoleService;
@@ -56,14 +57,21 @@ public class UploadDataListener extends AnalysisEventListener<Role> {
     /**
      * 这个每一条数据解析都会来调用
      *
-     * @param data
-     *            one row value. Is is same as {@link AnalysisContext#readRowHolder()}
+     * @param data    one row value. Is is same as {@link AnalysisContext#readRowHolder()}
      * @param context
      */
     @Override
     public void invoke(Role data, AnalysisContext context) {
         LOGGER.info("解析到一条数据:{}", JSON.toJSONString(data));
         data.setCreateById(this.currentUserId);
+        if (StringUtils.hasText(data.getSex()) && "男".equalsIgnoreCase(data.getSex())) {
+            data.setSex("man");
+        } else if (StringUtils.hasText(data.getSex()) && "女".equalsIgnoreCase(data.getSex())) {
+            data.setSex("woman");
+        } else {
+            data.setSex("man");
+        }
+        data.setStatus("已发布");
         list.add(data);
         // 达到BATCH_COUNT了，需要去存储一次数据库，防止数据几万条数据在内存，容易OOM
         if (list.size() >= BATCH_COUNT) {

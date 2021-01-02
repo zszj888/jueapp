@@ -23,13 +23,13 @@
                 <div class="layui-inline">
                     <div class="layui-input-block">
                         <input autocomplete="off" class="layui-input" name="name"
-                               placeholder="请输入角色名称" type="text">
+                               placeholder="请输入达人名称" type="text">
                     </div>
                 </div>
                 <div class="layui-inline">
                     <div class="layui-input-block">
                         <input autocomplete="off" class="layui-input" name="skill"
-                               placeholder="请输入才艺" type="text">
+                               placeholder="请输入服务范围" type="text">
                     </div>
                 </div>
 
@@ -86,10 +86,10 @@
                         <i class="layui-icon layui-icon-ok"></i></label>
                 </th>
                 <th class="sortable" data-field="name">角色名称</th>
-                <th class="sortable" data-field="skill">才艺</th>
+                <th class="sortable" data-field="age">年龄</th>
                 <th class="sortable" data-field="sex">性别</th>
                 <th class="sortable" data-field="fee">演出费</th>
-                <th class="sortable" data-field="showInfo">出演信息</th>
+                <th class="sortable" data-field="height">身高</th>
                 <!--                <th class="sortable" data-field="desc">描述</th>-->
                 <th class="sortable" data-field="status">状态</th>
                 <th class="sortable" data-field="createTime">创建时间</th>
@@ -102,10 +102,10 @@
                 <td><label class="timo-checkbox"><input th:value="${item.id}" type="checkbox">
                     <i class="layui-icon layui-icon-ok"></i></label></td>
                 <td th:text="${item.name}">用户名</td>
-                <td th:text="${item.skill}">用户昵称</td>
+                <td th:text="${item.age}">年龄</td>
                 <td th:text="${#dicts.keyValue('ROLE_SEX', item.sex)}">性别</td>
                 <td th:text="${item.fee}">电话</td>
-                <td th:text="${item.showInfo}">地址</td>
+                <td th:text="${item.height}">地址</td>
                 <td th:text="${item.status}">状态</td>
                 <td th:text="${item.createTime}">创建时间</td>
                 <!--                <td th:text="${#dates.format(item.createDate, 'yyyy-MM-dd HH:mm:ss')}">创建时间</td>-->

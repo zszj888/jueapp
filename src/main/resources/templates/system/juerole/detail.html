@@ -11,30 +11,36 @@
         <tr>
             <th width='100px'>编号</th>
             <td th:text="${user.id}"></td>
-            <th width='100px'>角色名称</th>
+            <th width='100px'>达人名称</th>
             <td th:text="${user.name}"></td>
         </tr>
         <tr>
-            <th>才艺专长</th>
-            <td th:text="${user.skill}"></td>
-            <th>角色性别</th>
-            <td th:text="${#dicts.keyValue('USER_SEX', user.sex)}"></td>
+            <th>个人特色</th>
+            <td th:text="${user.desc}"></td>
+            <th>达人性别</th>
+            <td th:text="${#dicts.keyValue('ROLE_SEX', user.sex)}"></td>
         </tr>
         <tr>
-            <th>出演信息</th>
-            <td th:text="${user.showInfo}"></td>
-            <th>演出总费用</th>
-            <td th:text="${user.fee}"></td>
+            <th>身高</th>
+            <td th:text="${user.height}"></td>
+            <th>年龄</th>
+            <td th:text="${user.age}"></td>
+        </tr>
+        <tr>
+            <th>服务范围</th>
+            <td th:text="${user.position}"></td>
+            <th>体重</th>
+            <td th:text="${user.weight}"></td>
         </tr>
         <tr>
             <th>创建时间</th>
             <td th:text="${user.createTime}"></td>
-            <!--            <th>最后修改</th>-->
-            <!--            <td th:text="${#dates.format(user.updateDate, 'yyyy-MM-dd HH:mm:ss')}"></td>-->
+            <th>演出总费用</th>
+            <td th:text="${user.fee}"></td>
         </tr>
         <tr>
             <th>备注</th>
-            <td colspan="4" th:text="${user.remrks}"></td>
+            <td colspan="4" th:text="${user.remark}"></td>
         </tr>
         </tbody>
     </table>
