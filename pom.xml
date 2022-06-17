@@ -139,7 +139,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.20</version>
+            <version>1.2.83</version>
         </dependency>
         <!--        spring-boot-starter-actuator-2.2.6.RELEASE-->
         <dependency>
